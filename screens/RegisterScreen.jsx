@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 import {
+  Alert,
   Image,
   KeyboardAvoidingView,
   SafeAreaView,
@@ -11,12 +12,13 @@ import {
 
 import AntDesign from "@expo/vector-icons/AntDesign";
 import Fontisto from "@expo/vector-icons/Fontisto";
+import { useNavigation } from "@react-navigation/native";
 import { useForm } from "react-hook-form";
 import DisableKeyBoardHOC from "../components/DisableKeyBoardHOC";
 import CustomButton from "../components/customButton/index";
 import CustomInput from "../components/customInput/index";
-import { useNavigation } from "@react-navigation/native";
 
+import axios from "axios";
 import EMAIL_REGEX from "../util/email-validation/index";
 
 const RegisterScreen = () => {
@@ -26,6 +28,7 @@ const RegisterScreen = () => {
     control,
     handleSubmit,
     reset,
+    setError,
     formState: { errors, isSubmitting, isSubmitSuccessful },
   } = useForm({
     defaultValues: {
@@ -35,8 +38,45 @@ const RegisterScreen = () => {
     },
   });
 
-  const onSignUpPressed = (data) => {
-    console.log(data);
+  const onSignUpPressed = async (data) => {
+    try {
+      const response = await axios.post(
+        "http://192.168.8.102:3000/api/v1/auth/register",
+        data
+      );
+
+      if (response.status === 200) {
+        Alert.alert(
+          "Please verify your email",
+          `You're almost there! We sent an email to ${response.data.email}`
+        );
+        return response.data;
+      } else {
+        console.error("Unexpected response:", response);
+        Alert.alert(
+          "Error",
+          "Something went wrong while registering. Please try again."
+        );
+      }
+    } catch (err) {
+      if (err.response) {
+        setError("root"),
+          {
+            message: err.response.data,
+          };
+
+        Alert.alert(
+          "Error",
+          err.response.data.message || "Registration failed. Please try again."
+        );
+      } else if (err.request) {
+        console.error("Network Error:", err.request);
+        Alert.alert("Error", "Network error. Please check your connection.");
+      } else {
+        console.error("Error:", err.message);
+        Alert.alert("Error", "An unexpected error occurred. Please try again.");
+      }
+    }
   };
 
   useEffect(() => {

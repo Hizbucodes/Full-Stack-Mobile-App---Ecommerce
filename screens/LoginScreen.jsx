@@ -18,6 +18,8 @@ import CustomInput from "../components/customInput/index";
 import { useNavigation } from "@react-navigation/native";
 
 import EMAIL_REGEX from "../util/email-validation/index";
+import axios from "axios";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const LoginScreen = () => {
   const navigation = useNavigation();
@@ -26,6 +28,7 @@ const LoginScreen = () => {
     control,
     handleSubmit,
     reset,
+    setError,
     formState: { errors, isSubmitting, isSubmitSuccessful },
   } = useForm({
     defaultValues: {
@@ -34,8 +37,44 @@ const LoginScreen = () => {
     },
   });
 
-  const onSignInPressed = (data) => {
-    console.log(data);
+  const onSignInPressed = async (data) => {
+    try {
+      const response = await axios.post(
+        "http://192.168.8.102:3000/api/v1/auth/login",
+        data
+      );
+
+      if (response.status === 200) {
+        const token = response.data.token;
+        AsyncStorage.setItem("authToken", token);
+        navigation.replace("Home");
+        return response.data;
+      } else {
+        console.error("Unexpected response:", response);
+        Alert.alert(
+          "Error",
+          "Something went wrong while login in. Please try again."
+        );
+      }
+    } catch (err) {
+      if (err.response) {
+        setError("root"),
+          {
+            message: err.response.data,
+          };
+
+        Alert.alert(
+          "Error",
+          err.response.data.message || "Login failed. Please try again."
+        );
+      } else if (err.request) {
+        console.error("Network Error:", err.request);
+        Alert.alert("Error", "Network error. Please check your connection.");
+      } else {
+        console.error("Error:", err.message);
+        Alert.alert("Error", "An unexpected error occurred. Please try again.");
+      }
+    }
   };
 
   useEffect(() => {

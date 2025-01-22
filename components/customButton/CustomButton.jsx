@@ -13,7 +13,7 @@ const CustomButton = ({ name, onPress, disabled, isSubmitting }) => {
     <View style={styles.container}>
       <Pressable disabled={disabled} onPress={onPress} style={styles.button}>
         {isSubmitting ? (
-          <ActivityIndicator />
+          <ActivityIndicator color={"white"} size={"large"} />
         ) : (
           <Text style={styles.text}>{name}</Text>
         )}
