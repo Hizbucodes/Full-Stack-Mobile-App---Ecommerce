@@ -17,8 +17,7 @@ import CustomButton from "../components/customButton/index";
 import CustomInput from "../components/customInput/index";
 import { useNavigation } from "@react-navigation/native";
 
-const EMAIL_REGEX =
-  /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+import EMAIL_REGEX from "../util/email-validation/index";
 
 const LoginScreen = () => {
   const navigation = useNavigation();
@@ -40,7 +39,9 @@ const LoginScreen = () => {
   };
 
   useEffect(() => {
-    reset();
+    if (isSubmitSuccessful) {
+      reset();
+    }
   }, [isSubmitSuccessful]);
 
   return (
@@ -53,7 +54,7 @@ const LoginScreen = () => {
           />
         </View>
 
-        <Text style={styles.Heading}>Login To your Account</Text>
+        <Text style={styles.Heading}>Login To Your Account</Text>
 
         <KeyboardAvoidingView>
           <View style={styles.InputGroup}>
@@ -75,7 +76,7 @@ const LoginScreen = () => {
                 />
               </View>
               {errors.email && (
-                <Text style={styles.errorText}>{errors.email.message}</Text>
+                <Text style={styles.errorText}>{errors.email?.message}</Text>
               )}
             </View>
 
@@ -90,7 +91,7 @@ const LoginScreen = () => {
                   rules={{
                     required: "Password is Required",
                     minLength: {
-                      value: 3,
+                      value: 8,
                       message: "Password must be atleast 8 characters long",
                     },
                   }}
@@ -110,6 +111,8 @@ const LoginScreen = () => {
           <CustomButton
             onPress={handleSubmit(onSignInPressed)}
             name="Sign in"
+            disabled={isSubmitting ? true : false}
+            isSubmitting={isSubmitting}
           />
 
           <View style={styles.signUpButtonContainer}>

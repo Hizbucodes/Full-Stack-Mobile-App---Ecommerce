@@ -1,12 +1,22 @@
 import React from "react";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import {
+  ActivityIndicator,
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 import BUTTON_BACKGROUND_COLOR from "../../constants/button/index";
 
-const CustomButton = ({ name, onPress }) => {
+const CustomButton = ({ name, onPress, disabled, isSubmitting }) => {
   return (
     <View style={styles.container}>
-      <Pressable onPress={onPress} style={styles.button}>
-        <Text style={styles.text}>{name}</Text>
+      <Pressable disabled={disabled} onPress={onPress} style={styles.button}>
+        {isSubmitting ? (
+          <ActivityIndicator />
+        ) : (
+          <Text style={styles.text}>{name}</Text>
+        )}
       </Pressable>
     </View>
   );
