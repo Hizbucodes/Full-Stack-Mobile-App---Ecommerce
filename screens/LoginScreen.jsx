@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 import {
+  Alert,
   Image,
   KeyboardAvoidingView,
   SafeAreaView,
@@ -24,6 +25,22 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 const LoginScreen = () => {
   const navigation = useNavigation();
 
+  useEffect(() => {
+    const checkLoginStatus = async () => {
+      try {
+        const token = await AsyncStorage.getItem("authToken");
+
+        if (token) {
+          navigation.replace("Main");
+        }
+      } catch (err) {
+        console.log("Error: ", err.message);
+      }
+    };
+
+    checkLoginStatus();
+  }, []);
+
   const {
     control,
     handleSubmit,
@@ -47,7 +64,7 @@ const LoginScreen = () => {
       if (response.status === 200) {
         const token = response.data.token;
         AsyncStorage.setItem("authToken", token);
-        navigation.replace("Home");
+        navigation.replace("Main");
         return response.data;
       } else {
         console.error("Unexpected response:", response);
