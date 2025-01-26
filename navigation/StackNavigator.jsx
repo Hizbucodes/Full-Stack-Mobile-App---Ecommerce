@@ -2,10 +2,9 @@ import { NavigationContainer } from "@react-navigation/native";
 
 import { createStackNavigator } from "@react-navigation/stack";
 import React from "react";
-import { StyleSheet } from "react-native";
+import BottomTabNavigator from "../navigation/BottomTabNavigator";
 import LoginScreen from "../screens/LoginScreen";
 import RegisterScreen from "../screens/RegisterScreen";
-import HomeScreen from "../screens/HomeScreen";
 
 const StackNavigator = () => {
   const Stack = createStackNavigator();
@@ -28,8 +27,8 @@ const StackNavigator = () => {
           }}
         />
         <Stack.Screen
-          name="Home"
-          component={HomeScreen}
+          name="Main"
+          component={BottomTabNavigator}
           options={{
             headerShown: false,
           }}
