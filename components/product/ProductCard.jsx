@@ -9,7 +9,10 @@ import {
 import React from "react";
 import { COMMON_COLOR } from "../../constants/commonColor";
 
-const ProductCard = ({ products }) => {
+const ProductCard = ({ products, category }) => {
+  const filteredProducts = category
+    ? products.filter((product) => product.category === category)
+    : products;
   const renderProductItems = ({ item }) => {
     return (
       <View style={styles.productCard}>
@@ -34,7 +37,12 @@ const ProductCard = ({ products }) => {
   };
 
   return (
-    <FlatList data={products} renderItem={renderProductItems} numColumns={2} />
+    <FlatList
+      data={filteredProducts}
+      renderItem={renderProductItems}
+      numColumns={2}
+      keyExtractor={(item) => item.id.toString()}
+    />
   );
 };
 

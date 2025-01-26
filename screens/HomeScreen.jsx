@@ -2,7 +2,7 @@ import AntDesign from "@expo/vector-icons/AntDesign";
 import Feather from "@expo/vector-icons/Feather";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import Fontisto from "@expo/vector-icons/Fontisto";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import {
   FlatList,
@@ -20,6 +20,7 @@ import { COMMON_COLOR } from "../constants/commonColor/index";
 import ImageCarousel from "../components/ImageCarousel";
 import axios from "axios";
 import ProductCard from "../components/product/ProductCard";
+import DropDownPicker from "react-native-dropdown-picker";
 
 const HomeScreen = () => {
   const list = [
@@ -202,6 +203,18 @@ const HomeScreen = () => {
   ];
 
   const [products, setProducts] = useState([]);
+  const [open, setOpen] = useState(false);
+  const [category, setCategory] = useState("jewelery");
+  const [items, setItems] = useState([
+    { label: "Men's clothing", value: "men's clothing" },
+    { label: "jewelery", value: "jewelery" },
+    { label: "electronics", value: "electronics" },
+    { label: "women's clothing", value: "women's clothing" },
+  ]);
+
+  const onCategoryOpen = useCallback(() => {
+    setCompanyOpen(false);
+  }, []);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -319,7 +332,20 @@ const HomeScreen = () => {
           <Text style={styles.productCategoryHeaderTitle}>
             Find Products By Category
           </Text>
-          <ProductCard products={products} />
+          <DropDownPicker
+            open={open}
+            value={category}
+            items={items}
+            setOpen={setOpen}
+            placeholder="choose category"
+            setValue={setCategory}
+            setItems={setItems}
+            onOpen={onCategoryOpen}
+            zIndex={3000}
+            zIndexInverse={1000}
+            style={styles.dropDownCategory}
+          />
+          <ProductCard products={products} category={category} />
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -428,5 +454,14 @@ const styles = StyleSheet.create({
     fontSize: 22,
     paddingLeft: 20,
     marginVertical: 25,
+  },
+  dropDownCategory: {
+    borderColor: COMMON_COLOR.secondary,
+    borderWidth: 3,
+    height: 30,
+    marginBottom: 50,
+    width: "45%",
+    marginLeft: 20,
+    marginHorizontal: 10,
   },
 });
