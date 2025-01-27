@@ -25,7 +25,7 @@ const ProductCard = ({ products, category }) => {
         </Text>
 
         <View style={styles.productPriceAndRatingContainer}>
-          <Text style={styles.productPrice}>${item?.price}</Text>
+          <Text style={styles.productPrice}>රු {item?.price}</Text>
           <Text style={styles.productRating}>{item?.rating?.rate} ratings</Text>
         </View>
 

@@ -5,6 +5,8 @@ import React from "react";
 import BottomTabNavigator from "../navigation/BottomTabNavigator";
 import LoginScreen from "../screens/LoginScreen";
 import RegisterScreen from "../screens/RegisterScreen";
+import ProductInfoScreen from "../screens/ProductInfoScreen";
+import { COMMON_COLOR } from "../constants/commonColor";
 
 const StackNavigator = () => {
   const Stack = createStackNavigator();
@@ -32,6 +34,18 @@ const StackNavigator = () => {
           options={{
             headerShown: false,
           }}
+        />
+
+        <Stack.Screen
+          name="product-info"
+          component={ProductInfoScreen}
+          options={({ route }) => ({
+            title: route.params.title,
+            headerTintColor: "white",
+            headerStyle: {
+              backgroundColor: COMMON_COLOR.primary,
+            },
+          })}
         />
       </Stack.Navigator>
     </NavigationContainer>
