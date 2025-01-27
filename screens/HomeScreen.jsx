@@ -5,6 +5,7 @@ import Fontisto from "@expo/vector-icons/Fontisto";
 import React, { useCallback, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import {
+  ActivityIndicator,
   FlatList,
   Image,
   Platform,
@@ -203,6 +204,8 @@ const HomeScreen = () => {
   ];
 
   const [products, setProducts] = useState([]);
+  const [isloading, setIsLoading] = useState(false);
+  const [productError, setProductError] = useState(null);
   const [open, setOpen] = useState(false);
   const [category, setCategory] = useState("jewelery");
   const [items, setItems] = useState([
@@ -219,10 +222,17 @@ const HomeScreen = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
+        setIsLoading(true);
         const response = await axios.get("https://fakestoreapi.com/products");
+        if (response.status !== 200) {
+          throw new Error(response.data.message);
+        }
         setProducts(response.data);
       } catch (err) {
         console.log(`Error Message: ${err}`);
+        setProductError(err.message);
+      } finally {
+        setIsLoading(false);
       }
     };
     fetchData();
@@ -345,7 +355,16 @@ const HomeScreen = () => {
             zIndexInverse={1000}
             style={styles.dropDownCategory}
           />
-          <ProductCard products={products} category={category} />
+          {isloading && (
+            <ActivityIndicator size={"large"} color={COMMON_COLOR.primary} />
+          )}
+          {productError && (
+            <Text style={styles.productErrorText}>{productError}</Text>
+          )}
+
+          {!isloading && !productError && (
+            <ProductCard products={products} category={category} />
+          )}
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -463,5 +482,11 @@ const styles = StyleSheet.create({
     width: "45%",
     marginLeft: 20,
     marginHorizontal: 10,
+  },
+  productErrorText: {
+    fontWeight: "500",
+    textAlign: "center",
+    fontSize: 25,
+    color: "red",
   },
 });
