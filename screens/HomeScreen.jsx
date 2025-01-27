@@ -530,7 +530,13 @@ const HomeScreen = () => {
           </View>
 
           <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
-            <TouchableOpacity style={styles.pickUpPointsContainer}>
+            <TouchableOpacity
+              onPress={() => {
+                setModalVisible(false);
+                navigation.navigate("address");
+              }}
+              style={styles.pickUpPointsContainer}
+            >
               <Text style={styles.pickUpPointsText}>
                 Add an Address or pick-up points
               </Text>
