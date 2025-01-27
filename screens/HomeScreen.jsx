@@ -2,6 +2,7 @@ import AntDesign from "@expo/vector-icons/AntDesign";
 import Feather from "@expo/vector-icons/Feather";
 import Fontisto from "@expo/vector-icons/Fontisto";
 import Ionicons from "@expo/vector-icons/Ionicons";
+import Entypo from "@expo/vector-icons/Entypo";
 import { useNavigation } from "@react-navigation/native";
 import axios from "axios";
 import React, { useCallback, useEffect, useState } from "react";
@@ -24,6 +25,7 @@ import CustomInput from "../components/customInput/index";
 import ImageCarousel from "../components/ImageCarousel";
 import ProductCard from "../components/product/ProductCard";
 import { COMMON_COLOR } from "../constants/commonColor/index";
+import { BottomModal, ModalContent, SlideAnimation } from "react-native-modals";
 
 const HomeScreen = () => {
   const images = [
@@ -310,6 +312,7 @@ const HomeScreen = () => {
   const [isloading, setIsLoading] = useState(false);
   const [productError, setProductError] = useState(null);
   const [open, setOpen] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
   const [category, setCategory] = useState("jewelery");
   const [items, setItems] = useState([
     { label: "Men's clothing", value: "men's clothing" },
@@ -400,113 +403,167 @@ const HomeScreen = () => {
     },
   });
   return (
-    <SafeAreaView style={styles.container}>
-      <ScrollView showsVerticalScrollIndicator={false}>
-        <View style={styles.searchContainer}>
-          <Pressable style={styles.searchInput}>
-            <AntDesign
-              name="search1"
-              size={24}
-              color="black"
-              style={styles.searchIcon}
-            />
-            <CustomInput
-              name="search"
-              control={control}
-              placeholder="Search EverStyle.in"
-            />
-          </Pressable>
-
-          <Feather name="mic" size={24} color="white" />
-        </View>
-
-        <View style={styles.locationHeaderContainer}>
-          <Ionicons name="location-outline" size={24} color="white" />
-          <Pressable>
-            <Text style={styles.addressText}>
-              Deliver to Hizbullah - Kandy 56789
-            </Text>
-          </Pressable>
-          <AntDesign name="down" size={18} color="white" />
-        </View>
-
-        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-          {list.map((item) => (
-            <Pressable
-              key={item.id}
-              style={styles.TopHorizontalPressebaleSliderImages}
-            >
-              <Image
-                style={styles.TopHorizontalSliderImages}
-                resizeMode="contain"
-                source={{ uri: item.image }}
+    <>
+      <SafeAreaView style={styles.container}>
+        <ScrollView showsVerticalScrollIndicator={false}>
+          <View style={styles.searchContainer}>
+            <Pressable style={styles.searchInput}>
+              <AntDesign
+                name="search1"
+                size={24}
+                color="black"
+                style={styles.searchIcon}
               />
-              <Text style={styles.TopHorizontalSliderImageText}>
-                {item?.name}
+              <CustomInput
+                name="search"
+                control={control}
+                placeholder="Search EverStyle.in"
+              />
+            </Pressable>
+
+            <Feather name="mic" size={24} color="white" />
+          </View>
+
+          <View style={styles.locationHeaderContainer}>
+            <Ionicons name="location-outline" size={24} color="white" />
+            <Pressable onPress={() => setModalVisible(!modalVisible)}>
+              <Text style={styles.addressText}>
+                Deliver to Hizbullah - Kandy 56789
               </Text>
             </Pressable>
-          ))}
-        </ScrollView>
-        <ImageCarousel
-          images={images}
-          dotActiveColor={COMMON_COLOR.primary}
-          dotInactiveColor={COMMON_COLOR.secondary}
-          showDotIndicator={true}
-        />
-        <Text style={styles.trendingDealsText}>
-          Trending Deals of the week{" "}
-          <Fontisto name="fire" size={24} color="#FFC11F" />
-        </Text>
+            <AntDesign name="down" size={18} color="white" />
+          </View>
 
-        <View style={styles.dealsItemContainer}>
-          <FlatList
-            data={deals}
-            renderItem={renderDealsItems}
-            keyExtractor={(deal) => deal.id}
-            numColumns={2}
+          <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+            {list.map((item) => (
+              <Pressable
+                key={item.id}
+                style={styles.TopHorizontalPressebaleSliderImages}
+              >
+                <Image
+                  style={styles.TopHorizontalSliderImages}
+                  resizeMode="contain"
+                  source={{ uri: item.image }}
+                />
+                <Text style={styles.TopHorizontalSliderImageText}>
+                  {item?.name}
+                </Text>
+              </Pressable>
+            ))}
+          </ScrollView>
+          <ImageCarousel
+            images={images}
+            dotActiveColor={COMMON_COLOR.primary}
+            dotInactiveColor={COMMON_COLOR.secondary}
+            showDotIndicator={true}
           />
-        </View>
-
-        <Text style={styles.todaysDealsText}>Today's Deals</Text>
-        <View style={styles.todaysDealsContainer}>
-          <FlatList
-            data={offers}
-            renderItem={renderOfferItems}
-            horizontal={true}
-            showsHorizontalScrollIndicator={false}
-          />
-        </View>
-
-        <View>
-          <Text style={styles.productCategoryHeaderTitle}>
-            Find Products By Category
+          <Text style={styles.trendingDealsText}>
+            Trending Deals of the week{" "}
+            <Fontisto name="fire" size={24} color="#FFC11F" />
           </Text>
-          <DropDownPicker
-            open={open}
-            value={category}
-            items={items}
-            setOpen={setOpen}
-            placeholder="choose category"
-            setValue={setCategory}
-            setItems={setItems}
-            onOpen={onCategoryOpen}
-            zIndex={3000}
-            zIndexInverse={1000}
-            style={styles.dropDownCategory}
-          />
-          {isloading && (
-            <ActivityIndicator size={"large"} color={COMMON_COLOR.primary} />
-          )}
-          {productError && (
-            <Text style={styles.productErrorText}>{productError}</Text>
-          )}
 
-          {!isloading && !productError && (
-            <ProductCard products={products} category={category} />
-          )}
-        </View>
-      </ScrollView>
-    </SafeAreaView>
+          <View style={styles.dealsItemContainer}>
+            <FlatList
+              data={deals}
+              renderItem={renderDealsItems}
+              keyExtractor={(deal) => deal.id}
+              numColumns={2}
+            />
+          </View>
+
+          <Text style={styles.todaysDealsText}>Today's Deals</Text>
+          <View style={styles.todaysDealsContainer}>
+            <FlatList
+              data={offers}
+              renderItem={renderOfferItems}
+              horizontal={true}
+              showsHorizontalScrollIndicator={false}
+            />
+          </View>
+
+          <View>
+            <Text style={styles.productCategoryHeaderTitle}>
+              Find Products By Category
+            </Text>
+            <DropDownPicker
+              open={open}
+              value={category}
+              items={items}
+              setOpen={setOpen}
+              placeholder="choose category"
+              setValue={setCategory}
+              setItems={setItems}
+              onOpen={onCategoryOpen}
+              zIndex={3000}
+              zIndexInverse={1000}
+              style={styles.dropDownCategory}
+            />
+            {isloading && (
+              <ActivityIndicator size={"large"} color={COMMON_COLOR.primary} />
+            )}
+            {productError && (
+              <Text style={styles.productErrorText}>{productError}</Text>
+            )}
+
+            {!isloading && !productError && (
+              <ProductCard products={products} category={category} />
+            )}
+          </View>
+        </ScrollView>
+      </SafeAreaView>
+      <BottomModal
+        onBackdropPress={() => setModalVisible(!modalVisible)}
+        swipeDirection={["up", "down"]}
+        swipeThreshold={200}
+        modalAnimation={new SlideAnimation({ slideFrom: "bottom" })}
+        onHardwareBackPress={() => setModalVisible(!modalVisible)}
+        visible={modalVisible}
+        onTouchOutside={() => setModalVisible(!modalVisible)}
+      >
+        <ModalContent style={styles.modalContainer}>
+          <View style={styles.modalContentContainer}>
+            <Text style={styles.modalTextTitle}>Choose your Location</Text>
+            <Text style={styles.modalTextSubTitle}>
+              Select a delivery location to see product availability and
+              delivery options
+            </Text>
+          </View>
+
+          <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
+            <TouchableOpacity style={styles.pickUpPointsContainer}>
+              <Text style={styles.pickUpPointsText}>
+                Add an Address or pick-up points
+              </Text>
+            </TouchableOpacity>
+          </ScrollView>
+
+          <View style={styles.addressAndPinCodeContainer}>
+            <View style={styles.modalTextLocation}>
+              <Entypo
+                name="location-pin"
+                size={24}
+                color={COMMON_COLOR.primary}
+              />
+              <Text style={styles.pinCodeText}>
+                Enter an Sri Lankan pincode
+              </Text>
+            </View>
+            <View style={styles.modalTextLocation}>
+              <Ionicons
+                name="locate-sharp"
+                size={24}
+                color={COMMON_COLOR.primary}
+              />
+              <Text style={styles.pinCodeText}>Use my Current Location</Text>
+            </View>
+            <View style={styles.modalTextLocation}>
+              <AntDesign name="earth" size={24} color={COMMON_COLOR.primary} />
+              <Text style={styles.pinCodeText}>Deliver outside Sri Lanka</Text>
+            </View>
+          </View>
+        </ModalContent>
+      </BottomModal>
+    </>
   );
 };
 
@@ -627,5 +684,51 @@ const styles = StyleSheet.create({
     textAlign: "center",
     fontSize: 25,
     color: "red",
+  },
+  modalContainer: {
+    width: "100%",
+    height: 400,
+  },
+  modalContentContainer: {
+    marginBottom: 8,
+  },
+  modalTextTitle: {
+    fontWeight: "500",
+    fontSize: 18,
+  },
+  modalTextSubTitle: {
+    marginTop: 5,
+    fontSize: 18,
+    color: "gray",
+  },
+  pickUpPointsContainer: {
+    width: 140,
+    height: 140,
+    borderColor: "#D0D0D0",
+    marginTop: 10,
+    borderWidth: 1,
+    padding: 10,
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius: 5,
+  },
+  pickUpPointsText: {
+    textAlign: "center",
+    color: COMMON_COLOR.primary,
+    fontWeight: "500",
+  },
+  modalTextLocation: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 5,
+  },
+  pinCodeText: {
+    color: COMMON_COLOR.primary,
+    fontWeight: "500",
+  },
+  addressAndPinCodeContainer: {
+    gap: 10,
+    flexDirection: "column",
+    marginBottom: 10,
   },
 });
