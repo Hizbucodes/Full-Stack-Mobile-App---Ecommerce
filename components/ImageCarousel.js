@@ -1,13 +1,23 @@
-import { View, Text, FlatList, Image, Dimensions } from "react-native";
 import React, { useEffect, useRef, useState } from "react";
-import { COMMON_COLOR } from "../constants/commonColor";
+import { View, FlatList, Image, Dimensions } from "react-native";
+import PropTypes from "prop-types";
 
-const ImageCarousel = () => {
+const ImageCarousel = ({
+  images = [],
+  autoScrollInterval = 5000,
+  imageHeight = 200,
+  dotActiveColor = "#000",
+  dotInactiveColor = "#ccc",
+  resizeMode = "cover",
+  showDotIndicator = false,
+}) => {
   const screenWidth = Dimensions.get("window").width;
   const [activeIndex, setActiveIndex] = useState(0);
   const flatlistRef = useRef();
 
   useEffect(() => {
+    if (images.length === 0) return;
+
     const interval = setInterval(() => {
       const nextIndex = activeIndex === images.length - 1 ? 0 : activeIndex + 1;
 
@@ -17,34 +27,10 @@ const ImageCarousel = () => {
       });
 
       setActiveIndex(nextIndex);
-    }, 5000);
+    }, autoScrollInterval);
 
     return () => clearInterval(interval);
-  }, [activeIndex, images?.length]);
-
-  const getItemLayout = (data, index) => ({
-    length: screenWidth,
-    offset: screenWidth * index,
-    index: index,
-  });
-
-  const images = [
-    {
-      id: "1",
-      image:
-        "https://img.etimg.com/thumb/msid-93051525,width-1070,height-580,imgsize-2243475,overlay-economictimes/photo.jpg",
-    },
-    {
-      id: "2",
-      image:
-        "https://images-eu.ssl-images-amazon.com/images/G/31/img22/Wireless/devjyoti/PD23/Launches/Updated_ingress1242x550_3.gif",
-    },
-    {
-      id: "3",
-      image:
-        "https://images-eu.ssl-images-amazon.com/images/G/31/img23/Books/BB/JULY/1242x550_Header-BB-Jul23.jpg",
-    },
-  ];
+  }, [activeIndex, images.length, autoScrollInterval]);
 
   const handleScroll = (event) => {
     const scrollPosition = event.nativeEvent.contentOffset.x;
@@ -52,44 +38,33 @@ const ImageCarousel = () => {
     setActiveIndex(index);
   };
 
-  const renderItem = ({ item, index }) => {
-    return (
-      <View>
-        <Image source={{ uri: item.image }} width={screenWidth} height={200} />
-      </View>
-    );
-  };
+  const renderItem = ({ item }) => (
+    <View>
+      <Image
+        source={{ uri: item.image }}
+        style={{
+          width: screenWidth,
+          height: imageHeight,
+          resizeMode: resizeMode,
+        }}
+      />
+    </View>
+  );
 
   const renderDotIndicator = () => {
-    return images.map((dot, index) => {
-      if (activeIndex === index) {
-        return (
-          <View
-            key={dot.id}
-            style={{
-              backgroundColor: COMMON_COLOR.primary,
-              height: 10,
-              width: 10,
-              borderRadius: 5,
-              marginHorizontal: 6,
-            }}
-          ></View>
-        );
-      } else {
-        return (
-          <View
-            key={dot.id}
-            style={{
-              backgroundColor: COMMON_COLOR.secondary,
-              height: 10,
-              width: 10,
-              borderRadius: 5,
-              marginHorizontal: 6,
-            }}
-          ></View>
-        );
-      }
-    });
+    return images.map((_, index) => (
+      <View
+        key={index}
+        style={{
+          backgroundColor:
+            activeIndex === index ? dotActiveColor : dotInactiveColor,
+          height: 10,
+          width: 10,
+          borderRadius: 5,
+          marginHorizontal: 6,
+        }}
+      />
+    ));
   };
 
   return (
@@ -97,8 +72,7 @@ const ImageCarousel = () => {
       <FlatList
         data={images}
         renderItem={renderItem}
-        keyExtractor={(item) => item.id}
-        getItemLayout={getItemLayout}
+        keyExtractor={(item, index) => index.toString()}
         horizontal={true}
         pagingEnabled={true}
         showsHorizontalScrollIndicator={false}
@@ -113,10 +87,30 @@ const ImageCarousel = () => {
           marginTop: 10,
         }}
       >
-        {renderDotIndicator()}
+        {showDotIndicator && renderDotIndicator()}
       </View>
     </View>
   );
+};
+
+ImageCarousel.propTypes = {
+  images: PropTypes.arrayOf(
+    PropTypes.shape({
+      image: PropTypes.string.isRequired,
+    })
+  ),
+  autoScrollInterval: PropTypes.number,
+  imageHeight: PropTypes.number,
+  dotActiveColor: PropTypes.string,
+  dotInactiveColor: PropTypes.string,
+};
+
+ImageCarousel.defaultProps = {
+  images: [],
+  autoScrollInterval: 5000,
+  imageHeight: 200,
+  dotActiveColor: "#000",
+  dotInactiveColor: "#ccc",
 };
 
 export default ImageCarousel;

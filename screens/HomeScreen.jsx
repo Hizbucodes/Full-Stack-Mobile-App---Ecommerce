@@ -1,7 +1,9 @@
 import AntDesign from "@expo/vector-icons/AntDesign";
 import Feather from "@expo/vector-icons/Feather";
-import Ionicons from "@expo/vector-icons/Ionicons";
 import Fontisto from "@expo/vector-icons/Fontisto";
+import Ionicons from "@expo/vector-icons/Ionicons";
+import { useNavigation } from "@react-navigation/native";
+import axios from "axios";
 import React, { useCallback, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import {
@@ -14,16 +16,33 @@ import {
   ScrollView,
   StyleSheet,
   Text,
+  TouchableOpacity,
   View,
 } from "react-native";
-import CustomInput from "../components/customInput/index";
-import { COMMON_COLOR } from "../constants/commonColor/index";
-import ImageCarousel from "../components/ImageCarousel";
-import axios from "axios";
-import ProductCard from "../components/product/ProductCard";
 import DropDownPicker from "react-native-dropdown-picker";
+import CustomInput from "../components/customInput/index";
+import ImageCarousel from "../components/ImageCarousel";
+import ProductCard from "../components/product/ProductCard";
+import { COMMON_COLOR } from "../constants/commonColor/index";
 
 const HomeScreen = () => {
+  const images = [
+    {
+      id: "1",
+      image:
+        "https://img.etimg.com/thumb/msid-93051525,width-1070,height-580,imgsize-2243475,overlay-economictimes/photo.jpg",
+    },
+    {
+      id: "2",
+      image:
+        "https://images-eu.ssl-images-amazon.com/images/G/31/img22/Wireless/devjyoti/PD23/Launches/Updated_ingress1242x550_3.gif",
+    },
+    {
+      id: "3",
+      image:
+        "https://images-eu.ssl-images-amazon.com/images/G/31/img23/Books/BB/JULY/1242x550_Header-BB-Jul23.jpg",
+    },
+  ];
   const list = [
     {
       id: "0",
@@ -82,10 +101,22 @@ const HomeScreen = () => {
       image:
         "https://images-eu.ssl-images-amazon.com/images/G/31/wireless_products/ssserene/weblab_wf/xcm_banners_2022_in_bau_wireless_dec_580x800_once3l_v2_580x800_in-en.jpg",
       carouselImages: [
-        "https://m.media-amazon.com/images/I/61QRgOgBx0L._SX679_.jpg",
-        "https://m.media-amazon.com/images/I/61uaJPLIdML._SX679_.jpg",
-        "https://m.media-amazon.com/images/I/510YZx4v3wL._SX679_.jpg",
-        "https://m.media-amazon.com/images/I/61J6s1tkwpL._SX679_.jpg",
+        {
+          id: "1",
+          image: "https://m.media-amazon.com/images/I/61QRgOgBx0L._SX679_.jpg",
+        },
+        {
+          id: "2",
+          image: "https://m.media-amazon.com/images/I/61uaJPLIdML._SX679_.jpg",
+        },
+        {
+          id: "3",
+          image: "https://m.media-amazon.com/images/I/510YZx4v3wL._SX679_.jpg",
+        },
+        {
+          id: "4",
+          image: "https://m.media-amazon.com/images/I/61J6s1tkwpL._SX679_.jpg",
+        },
       ],
       color: "Stellar Green",
       size: "6 GB RAM 128GB Storage",
@@ -99,10 +130,22 @@ const HomeScreen = () => {
       image:
         "https://images-eu.ssl-images-amazon.com/images/G/31/img23/Wireless/Samsung/SamsungBAU/S20FE/GW/June23/BAU-27thJune/xcm_banners_2022_in_bau_wireless_dec_s20fe-rv51_580x800_in-en.jpg",
       carouselImages: [
-        "https://m.media-amazon.com/images/I/81vDZyJQ-4L._SY879_.jpg",
-        "https://m.media-amazon.com/images/I/61vN1isnThL._SX679_.jpg",
-        "https://m.media-amazon.com/images/I/71yzyH-ohgL._SX679_.jpg",
-        "https://m.media-amazon.com/images/I/61vN1isnThL._SX679_.jpg",
+        {
+          id: "1",
+          image: "https://m.media-amazon.com/images/I/81vDZyJQ-4L._SY879_.jpg",
+        },
+        {
+          id: "2",
+          image: "https://m.media-amazon.com/images/I/61vN1isnThL._SX679_.jpg",
+        },
+        {
+          id: "3",
+          image: "https://m.media-amazon.com/images/I/71yzyH-ohgL._SX679_.jpg",
+        },
+        {
+          id: "4",
+          image: "https://m.media-amazon.com/images/I/61vN1isnThL._SX679_.jpg",
+        },
       ],
       color: "Cloud Navy",
       size: "8 GB RAM 128GB Storage",
@@ -116,9 +159,18 @@ const HomeScreen = () => {
       image:
         "https://images-eu.ssl-images-amazon.com/images/G/31/img23/Wireless/Samsung/CatPage/Tiles/June/xcm_banners_m14_5g_rv1_580x800_in-en.jpg",
       carouselImages: [
-        "https://m.media-amazon.com/images/I/817WWpaFo1L._SX679_.jpg",
-        "https://m.media-amazon.com/images/I/81KkF-GngHL._SX679_.jpg",
-        "https://m.media-amazon.com/images/I/61IrdBaOhbL._SX679_.jpg",
+        {
+          id: "1",
+          image: "https://m.media-amazon.com/images/I/817WWpaFo1L._SX679_.jpg",
+        },
+        {
+          id: "2",
+          image: "https://m.media-amazon.com/images/I/81KkF-GngHL._SX679_.jpg",
+        },
+        {
+          id: "3",
+          image: "https://m.media-amazon.com/images/I/61IrdBaOhbL._SX679_.jpg",
+        },
       ],
       color: "Icy Silver",
       size: "6 GB RAM 64GB Storage",
@@ -132,9 +184,19 @@ const HomeScreen = () => {
       image:
         "https://images-eu.ssl-images-amazon.com/images/G/31/tiyesum/N55/June/xcm_banners_2022_in_bau_wireless_dec_580x800_v1-n55-marchv2-mayv3-v4_580x800_in-en.jpg",
       carouselImages: [
-        "https://m.media-amazon.com/images/I/41Iyj5moShL._SX300_SY300_QL70_FMwebp_.jpg",
-        "https://m.media-amazon.com/images/I/61og60CnGlL._SX679_.jpg",
-        "https://m.media-amazon.com/images/I/61twx1OjYdL._SX679_.jpg",
+        {
+          id: "1",
+          image:
+            "https://m.media-amazon.com/images/I/41Iyj5moShL._SX300_SY300_QL70_FMwebp_.jpg",
+        },
+        {
+          id: "2",
+          image: "https://m.media-amazon.com/images/I/61og60CnGlL._SX679_.jpg",
+        },
+        {
+          id: "3",
+          image: "https://m.media-amazon.com/images/I/61twx1OjYdL._SX679_.jpg",
+        },
       ],
     },
   ];
@@ -150,10 +212,22 @@ const HomeScreen = () => {
       image:
         "https://m.media-amazon.com/images/I/61a2y1FCAJL._AC_UL640_FMwebp_QL65_.jpg",
       carouselImages: [
-        "https://m.media-amazon.com/images/I/61a2y1FCAJL._SX679_.jpg",
-        "https://m.media-amazon.com/images/I/71DOcYgHWFL._SX679_.jpg",
-        "https://m.media-amazon.com/images/I/71LhLZGHrlL._SX679_.jpg",
-        "https://m.media-amazon.com/images/I/61Rgefy4ndL._SX679_.jpg",
+        {
+          id: "1",
+          image: "https://m.media-amazon.com/images/I/61a2y1FCAJL._SX679_.jpg",
+        },
+        {
+          id: "2",
+          image: "https://m.media-amazon.com/images/I/71DOcYgHWFL._SX679_.jpg",
+        },
+        {
+          id: "3",
+          image: "https://m.media-amazon.com/images/I/71LhLZGHrlL._SX679_.jpg",
+        },
+        {
+          id: "4",
+          image: "https://m.media-amazon.com/images/I/61Rgefy4ndL._SX679_.jpg",
+        },
       ],
       color: "Green",
       size: "Normal",
@@ -162,47 +236,76 @@ const HomeScreen = () => {
       id: "1",
       title:
         "Fastrack Limitless FS1 Pro Smart Watch|1.96 Super AMOLED Arched Display with 410x502 Pixel Resolution|SingleSync BT Calling|NitroFast Charging|110+ Sports Modes|200+ Watchfaces|Upto 7 Days Battery",
-      offer: "40%",
+      offer: "40% off",
       oldPrice: 7955,
       price: 3495,
       image: "https://m.media-amazon.com/images/I/41mQKmbkVWL._AC_SY400_.jpg",
       carouselImages: [
-        "https://m.media-amazon.com/images/I/71h2K2OQSIL._SX679_.jpg",
-        "https://m.media-amazon.com/images/I/71BlkyWYupL._SX679_.jpg",
-        "https://m.media-amazon.com/images/I/71c1tSIZxhL._SX679_.jpg",
+        {
+          id: "1",
+          image: "https://m.media-amazon.com/images/I/71h2K2OQSIL._SX679_.jpg",
+        },
+        {
+          id: "2",
+          image: "https://m.media-amazon.com/images/I/71BlkyWYupL._SX679_.jpg",
+        },
+        {
+          id: "3",
+          image: "https://m.media-amazon.com/images/I/71c1tSIZxhL._SX679_.jpg",
+        },
       ],
       color: "black",
       size: "Normal",
     },
     {
       id: "2",
-      title: "Aishwariya System On Ear Wireless On Ear Bluetooth Headphones",
-      offer: "40%",
+      title:
+        "RORSOU R10 On-Ear Headphones with Microphone, Lightweight Folding Stereo Bass Headphones with 1.5M No-Tangle Cord, Portable Wired Headphones for Smartphone Tablet Computer MP3 / 4 (Black)",
+      offer: "40% off",
       oldPrice: 7955,
       price: 3495,
-      image: "https://m.media-amazon.com/images/I/41t7Wa+kxPL._AC_SY400_.jpg",
-      carouselImages: ["https://m.media-amazon.com/images/I/41t7Wa+kxPL.jpg"],
-      color: "black",
+      image: "https://m.media-amazon.com/images/I/61z-rTknwVS._AC_SX466_.jpg",
+      carouselImages: [
+        {
+          id: "1",
+          image:
+            "https://m.media-amazon.com/images/I/41Er73YpIAS._AC_US40_.jpg",
+        },
+      ],
+      color: "red",
       size: "Normal",
     },
     {
       id: "3",
       title:
-        "Fastrack Limitless FS1 Pro Smart Watch|1.96 Super AMOLED Arched Display with 410x502 Pixel Resolution|SingleSync BT Calling|NitroFast Charging|110+ Sports Modes|200+ Watchfaces|Upto 7 Days Battery",
-      offer: "40%",
+        "Screen Protector for iphone 12 Pro Max,9H 2.5D Premium Clear Screen Tempered Glass for iPhone 12 Pro Max 6.7'' Protective Film (2pcs)",
+      offer: "40% off",
       oldPrice: 24999,
       price: 19999,
-      image: "https://m.media-amazon.com/images/I/71k3gOik46L._AC_SY400_.jpg",
+      image: "https://m.media-amazon.com/images/I/61VEKiWD7cL._AC_SX679_.jpg",
       carouselImages: [
-        "https://m.media-amazon.com/images/I/41bLD50sZSL._SX300_SY300_QL70_FMwebp_.jpg",
-        "https://m.media-amazon.com/images/I/616pTr2KJEL._SX679_.jpg",
-        "https://m.media-amazon.com/images/I/71wSGO0CwQL._SX679_.jpg",
+        {
+          id: "1",
+          image:
+            "https://m.media-amazon.com/images/I/51hHMN6oBiL._AC_SR38,50_.jpg",
+        },
+        {
+          id: "2",
+          image:
+            "https://m.media-amazon.com/images/I/51eO7xVPV2L._AC_SR38,50_.jpg",
+        },
+        {
+          id: "3",
+          image:
+            "https://m.media-amazon.com/images/I/51b5phxvyXL._AC_SR38,50_.jpg",
+        },
       ],
-      color: "Norway Blue",
+      color: "transparent",
       size: "8GB RAM, 128GB Storage",
     },
   ];
 
+  const navigation = useNavigation();
   const [products, setProducts] = useState([]);
   const [isloading, setIsLoading] = useState(false);
   const [productError, setProductError] = useState(null);
@@ -240,23 +343,54 @@ const HomeScreen = () => {
 
   const renderDealsItems = ({ item }) => {
     return (
-      <Image
-        source={{ uri: item.image }}
-        resizeMode="cover"
-        style={styles.dealsItemImage}
-      />
+      <TouchableOpacity
+        onPress={() =>
+          navigation.navigate("product-info", {
+            id: item.id,
+            title: item.title,
+            price: item.price,
+            carouselImages: item.carouselImages,
+            color: item.color,
+            oldPrice: item.oldPrice,
+            offer: item.offer,
+            size: item.size,
+            item: item,
+          })
+        }
+      >
+        <Image
+          source={{ uri: item.image }}
+          resizeMode="cover"
+          style={styles.dealsItemImage}
+        />
+      </TouchableOpacity>
     );
   };
 
   const renderOfferItems = ({ item }) => {
     return (
-      <View style={styles.renderOfferItems}>
+      <Pressable
+        onPress={() =>
+          navigation.navigate("product-info", {
+            id: item.id,
+            title: item.title,
+            price: item.price,
+            carouselImages: item.carouselImages,
+            color: item.color,
+            oldPrice: item.oldPrice,
+            offer: item.offer,
+            size: item.size,
+            item: item,
+          })
+        }
+        style={styles.renderOfferItems}
+      >
         <Image
           source={{ uri: item.image }}
           style={styles.dealsOfferItemImage}
         />
         <Text style={styles.renderOfferItemsText}>Upto {item?.offer}</Text>
-      </View>
+      </Pressable>
     );
   };
 
@@ -313,7 +447,12 @@ const HomeScreen = () => {
             </Pressable>
           ))}
         </ScrollView>
-        <ImageCarousel />
+        <ImageCarousel
+          images={images}
+          dotActiveColor={COMMON_COLOR.primary}
+          dotInactiveColor={COMMON_COLOR.secondary}
+          showDotIndicator={true}
+        />
         <Text style={styles.trendingDealsText}>
           Trending Deals of the week{" "}
           <Fontisto name="fire" size={24} color="#FFC11F" />
