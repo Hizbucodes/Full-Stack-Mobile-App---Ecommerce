@@ -1,7 +1,9 @@
 import AntDesign from "@expo/vector-icons/AntDesign";
 import Feather from "@expo/vector-icons/Feather";
-import Ionicons from "@expo/vector-icons/Ionicons";
 import Fontisto from "@expo/vector-icons/Fontisto";
+import Ionicons from "@expo/vector-icons/Ionicons";
+import { useNavigation } from "@react-navigation/native";
+import axios from "axios";
 import React, { useCallback, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import {
@@ -14,15 +16,14 @@ import {
   ScrollView,
   StyleSheet,
   Text,
+  TouchableOpacity,
   View,
 } from "react-native";
-import CustomInput from "../components/customInput/index";
-import { COMMON_COLOR } from "../constants/commonColor/index";
-import ImageCarousel from "../components/ImageCarousel";
-import axios from "axios";
-import ProductCard from "../components/product/ProductCard";
 import DropDownPicker from "react-native-dropdown-picker";
-import { useNavigation } from "@react-navigation/native";
+import CustomInput from "../components/customInput/index";
+import ImageCarousel from "../components/ImageCarousel";
+import ProductCard from "../components/product/ProductCard";
+import { COMMON_COLOR } from "../constants/commonColor/index";
 
 const HomeScreen = () => {
   const images = [
@@ -100,10 +101,22 @@ const HomeScreen = () => {
       image:
         "https://images-eu.ssl-images-amazon.com/images/G/31/wireless_products/ssserene/weblab_wf/xcm_banners_2022_in_bau_wireless_dec_580x800_once3l_v2_580x800_in-en.jpg",
       carouselImages: [
-        "https://m.media-amazon.com/images/I/61QRgOgBx0L._SX679_.jpg",
-        "https://m.media-amazon.com/images/I/61uaJPLIdML._SX679_.jpg",
-        "https://m.media-amazon.com/images/I/510YZx4v3wL._SX679_.jpg",
-        "https://m.media-amazon.com/images/I/61J6s1tkwpL._SX679_.jpg",
+        {
+          id: "1",
+          image: "https://m.media-amazon.com/images/I/61QRgOgBx0L._SX679_.jpg",
+        },
+        {
+          id: "2",
+          image: "https://m.media-amazon.com/images/I/61uaJPLIdML._SX679_.jpg",
+        },
+        {
+          id: "3",
+          image: "https://m.media-amazon.com/images/I/510YZx4v3wL._SX679_.jpg",
+        },
+        {
+          id: "4",
+          image: "https://m.media-amazon.com/images/I/61J6s1tkwpL._SX679_.jpg",
+        },
       ],
       color: "Stellar Green",
       size: "6 GB RAM 128GB Storage",
@@ -117,10 +130,22 @@ const HomeScreen = () => {
       image:
         "https://images-eu.ssl-images-amazon.com/images/G/31/img23/Wireless/Samsung/SamsungBAU/S20FE/GW/June23/BAU-27thJune/xcm_banners_2022_in_bau_wireless_dec_s20fe-rv51_580x800_in-en.jpg",
       carouselImages: [
-        "https://m.media-amazon.com/images/I/81vDZyJQ-4L._SY879_.jpg",
-        "https://m.media-amazon.com/images/I/61vN1isnThL._SX679_.jpg",
-        "https://m.media-amazon.com/images/I/71yzyH-ohgL._SX679_.jpg",
-        "https://m.media-amazon.com/images/I/61vN1isnThL._SX679_.jpg",
+        {
+          id: "1",
+          image: "https://m.media-amazon.com/images/I/81vDZyJQ-4L._SY879_.jpg",
+        },
+        {
+          id: "2",
+          image: "https://m.media-amazon.com/images/I/61vN1isnThL._SX679_.jpg",
+        },
+        {
+          id: "3",
+          image: "https://m.media-amazon.com/images/I/71yzyH-ohgL._SX679_.jpg",
+        },
+        {
+          id: "4",
+          image: "https://m.media-amazon.com/images/I/61vN1isnThL._SX679_.jpg",
+        },
       ],
       color: "Cloud Navy",
       size: "8 GB RAM 128GB Storage",
@@ -134,9 +159,18 @@ const HomeScreen = () => {
       image:
         "https://images-eu.ssl-images-amazon.com/images/G/31/img23/Wireless/Samsung/CatPage/Tiles/June/xcm_banners_m14_5g_rv1_580x800_in-en.jpg",
       carouselImages: [
-        "https://m.media-amazon.com/images/I/817WWpaFo1L._SX679_.jpg",
-        "https://m.media-amazon.com/images/I/81KkF-GngHL._SX679_.jpg",
-        "https://m.media-amazon.com/images/I/61IrdBaOhbL._SX679_.jpg",
+        {
+          id: "1",
+          image: "https://m.media-amazon.com/images/I/817WWpaFo1L._SX679_.jpg",
+        },
+        {
+          id: "2",
+          image: "https://m.media-amazon.com/images/I/81KkF-GngHL._SX679_.jpg",
+        },
+        {
+          id: "3",
+          image: "https://m.media-amazon.com/images/I/61IrdBaOhbL._SX679_.jpg",
+        },
       ],
       color: "Icy Silver",
       size: "6 GB RAM 64GB Storage",
@@ -150,9 +184,19 @@ const HomeScreen = () => {
       image:
         "https://images-eu.ssl-images-amazon.com/images/G/31/tiyesum/N55/June/xcm_banners_2022_in_bau_wireless_dec_580x800_v1-n55-marchv2-mayv3-v4_580x800_in-en.jpg",
       carouselImages: [
-        "https://m.media-amazon.com/images/I/41Iyj5moShL._SX300_SY300_QL70_FMwebp_.jpg",
-        "https://m.media-amazon.com/images/I/61og60CnGlL._SX679_.jpg",
-        "https://m.media-amazon.com/images/I/61twx1OjYdL._SX679_.jpg",
+        {
+          id: "1",
+          image:
+            "https://m.media-amazon.com/images/I/41Iyj5moShL._SX300_SY300_QL70_FMwebp_.jpg",
+        },
+        {
+          id: "2",
+          image: "https://m.media-amazon.com/images/I/61og60CnGlL._SX679_.jpg",
+        },
+        {
+          id: "3",
+          image: "https://m.media-amazon.com/images/I/61twx1OjYdL._SX679_.jpg",
+        },
       ],
     },
   ];
@@ -299,11 +343,27 @@ const HomeScreen = () => {
 
   const renderDealsItems = ({ item }) => {
     return (
-      <Image
-        source={{ uri: item.image }}
-        resizeMode="cover"
-        style={styles.dealsItemImage}
-      />
+      <TouchableOpacity
+        onPress={() =>
+          navigation.navigate("product-info", {
+            id: item.id,
+            title: item.title,
+            price: item.price,
+            carouselImages: item.carouselImages,
+            color: item.color,
+            oldPrice: item.oldPrice,
+            offer: item.offer,
+            size: item.size,
+            item: item,
+          })
+        }
+      >
+        <Image
+          source={{ uri: item.image }}
+          resizeMode="cover"
+          style={styles.dealsItemImage}
+        />
+      </TouchableOpacity>
     );
   };
 
@@ -320,6 +380,7 @@ const HomeScreen = () => {
             oldPrice: item.oldPrice,
             offer: item.offer,
             size: item.size,
+            item: item,
           })
         }
         style={styles.renderOfferItems}

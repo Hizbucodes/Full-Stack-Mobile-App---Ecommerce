@@ -1,5 +1,10 @@
+import Entypo from "@expo/vector-icons/Entypo";
+import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
+import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
+import Ionicons from "@expo/vector-icons/Ionicons";
+import { useRoute } from "@react-navigation/native";
+import React, { useState } from "react";
 import {
-  Pressable,
   SafeAreaView,
   ScrollView,
   StyleSheet,
@@ -7,17 +12,28 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import React from "react";
-import { useRoute } from "@react-navigation/native";
+import { useDispatch, useSelector } from "react-redux";
+import { addToCart } from "../app/feature/cart/cartSlice";
 import ImageCarousel from "../components/ImageCarousel";
 import { COMMON_COLOR } from "../constants/commonColor";
-import Entypo from "@expo/vector-icons/Entypo";
-import Ionicons from "@expo/vector-icons/Ionicons";
 
 const ProductInfoScreen = () => {
   const route = useRoute();
+  const dispatch = useDispatch();
+  const cart = useSelector((state) => state.cart.cart);
+  const [isProductAlreadyAdded, setIsProductAlreadyAdded] = useState(false);
 
   const carouselImages = route?.params?.carouselImages;
+
+  const addProductToCart = (item) => {
+    setIsProductAlreadyAdded(true);
+    dispatch(addToCart(item));
+    setTimeout(() => {
+      setIsProductAlreadyAdded(false);
+    }, 60000);
+  };
+
+  console.log(cart);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -30,9 +46,11 @@ const ProductInfoScreen = () => {
             dotInactiveColor={COMMON_COLOR.secondary}
             resizeMode="contain"
           />
-          <View style={styles.offerContainer}>
-            <Text style={styles.offerText}>{route?.params?.offer}</Text>
-          </View>
+          {route?.params?.offer && (
+            <View style={styles.offerContainer}>
+              <Text style={styles.offerText}>{route?.params?.offer}</Text>
+            </View>
+          )}
 
           <View style={styles.shareContainer}>
             <Entypo name="share" size={24} color="black" />
@@ -79,10 +97,25 @@ const ProductInfoScreen = () => {
           </View>
 
           <View style={styles.ButtonsContainer}>
-            <TouchableOpacity style={styles.buttonPressableAddToCart}>
-              <Text style={styles.buttonPressableText}>Add to Cart</Text>
+            <TouchableOpacity
+              onPress={() => addProductToCart(route?.params?.item)}
+              style={styles.buttonPressableAddToCart}
+            >
+              {isProductAlreadyAdded ? (
+                <FontAwesome6 name="circle-check" size={24} color="white" />
+              ) : (
+                <FontAwesome6 name="cart-plus" size={24} color="white" />
+              )}
+
+              <Text style={styles.buttonPressableText}>
+                {isProductAlreadyAdded
+                  ? "Product Already Added"
+                  : "Add to Cart"}
+              </Text>
             </TouchableOpacity>
+
             <TouchableOpacity style={styles.buttonPressableBuyNow}>
+              <FontAwesome5 name="money-bill-alt" size={24} color="white" />
               <Text style={styles.buttonPressableText}>Buy Now</Text>
             </TouchableOpacity>
           </View>
@@ -234,18 +267,22 @@ const styles = StyleSheet.create({
     marginBottom: 30,
   },
   buttonPressableAddToCart: {
+    flexDirection: "row",
     backgroundColor: COMMON_COLOR.secondary,
     paddingVertical: 20,
     borderRadius: 50,
     alignItems: "center",
     justifyContent: "center",
+    columnGap: 15,
   },
   buttonPressableBuyNow: {
+    flexDirection: "row",
     backgroundColor: COMMON_COLOR.primary,
     paddingVertical: 20,
     borderRadius: 50,
     alignItems: "center",
     justifyContent: "center",
+    columnGap: 15,
   },
   buttonPressableText: {
     color: "white",

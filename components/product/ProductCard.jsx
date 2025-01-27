@@ -1,15 +1,28 @@
+import React, { useState } from "react";
 import {
   FlatList,
   Image,
-  Pressable,
   StyleSheet,
   Text,
+  TouchableOpacity,
   View,
 } from "react-native";
-import React from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { addToCart } from "../../app/feature/cart/cartSlice";
 import { COMMON_COLOR } from "../../constants/commonColor";
 
 const ProductCard = ({ products, category }) => {
+  const dispatch = useDispatch();
+  const cart = useSelector((state) => state.cart.cart);
+
+  const isProductInCart = (productId) => {
+    return cart.some((cartItem) => cartItem.id === productId);
+  };
+
+  const addProductToCart = (item) => {
+    dispatch(addToCart(item));
+  };
+
   const filteredProducts = category
     ? products.filter((product) => product.category === category)
     : products;
@@ -29,9 +42,14 @@ const ProductCard = ({ products, category }) => {
           <Text style={styles.productRating}>{item?.rating?.rate} ratings</Text>
         </View>
 
-        <Pressable style={styles.addToCartButton}>
-          <Text style={styles.addToCartText}>Add to Cart</Text>
-        </Pressable>
+        <TouchableOpacity
+          onPress={() => addProductToCart(item)}
+          style={styles.addToCartButton}
+        >
+          <Text style={styles.addToCartText}>
+            {isProductInCart(item.id) ? "Product Already Added" : "Add to Cart"}
+          </Text>
+        </TouchableOpacity>
       </View>
     );
   };
