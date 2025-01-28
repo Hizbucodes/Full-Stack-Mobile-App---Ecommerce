@@ -143,7 +143,7 @@ export const login = async (req, res) => {
   }
 };
 
-export const authenticatio = async (req, res, next) => {
+export const authentication = async (req, res, next) => {
   let idToken = "";
   if (
     req.headers.authorization &&

@@ -6,7 +6,9 @@ import BottomTabNavigator from "../navigation/BottomTabNavigator";
 import LoginScreen from "../screens/LoginScreen";
 import RegisterScreen from "../screens/RegisterScreen";
 import ProductInfoScreen from "../screens/ProductInfoScreen";
+import AddressScreen from "../screens/AddressScreen";
 import { COMMON_COLOR } from "../constants/commonColor";
+import AddAddressScreen from "../screens/AddAddressScreen";
 
 const StackNavigator = () => {
   const Stack = createStackNavigator();
@@ -46,6 +48,26 @@ const StackNavigator = () => {
               backgroundColor: COMMON_COLOR.primary,
             },
           })}
+        />
+
+        <Stack.Screen
+          name="address"
+          component={AddressScreen}
+          options={{
+            headerTitle: "Address",
+            headerStyle: {
+              backgroundColor: COMMON_COLOR.primary,
+            },
+            headerTintColor: "white",
+          }}
+        />
+
+        <Stack.Screen
+          name="add-address"
+          component={AddAddressScreen}
+          options={{
+            headerShown: false,
+          }}
         />
       </Stack.Navigator>
     </NavigationContainer>
