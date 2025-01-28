@@ -1,5 +1,4 @@
 import express from "express";
-import { authentication } from "../controller/authController.js";
 import { addAddress, getAllAddress } from "../controller/addressController.js";
 
 const Router = express.Router();
