@@ -1,4 +1,5 @@
 import {
+  ActivityIndicator,
   FlatList,
   Pressable,
   ScrollView,
@@ -92,6 +93,13 @@ const AddressScreen = () => {
           <MaterialIcons name="keyboard-arrow-right" size={24} color="black" />
         </Pressable>
 
+        {isLoading && (
+          <ActivityIndicator
+            style={styles.ActivityIndicator}
+            size={"large"}
+            color={COMMON_COLOR.primary}
+          />
+        )}
         <FlatList data={addresses} renderItem={renderAddresses} />
       </View>
     </ScrollView>
@@ -103,6 +111,7 @@ export default AddressScreen;
 const styles = StyleSheet.create({
   formContainer: {
     padding: 20,
+    backgroundColor: "white",
   },
   inputLabelText: {
     fontWeight: "bold",

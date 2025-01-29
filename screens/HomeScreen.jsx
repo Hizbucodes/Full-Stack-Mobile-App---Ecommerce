@@ -317,6 +317,7 @@ const HomeScreen = () => {
   const [isloading, setIsLoading] = useState(false);
   const [productError, setProductError] = useState(null);
   const [open, setOpen] = useState(false);
+  const [selectedAddress, setSelectedAddress] = useState("");
   const [modalVisible, setModalVisible] = useState(false);
   const [category, setCategory] = useState("jewelery");
   const [items, setItems] = useState([
@@ -360,7 +361,7 @@ const HomeScreen = () => {
       );
       if (response.status === 200) {
         console.log(response.data);
-        setAddresses(response.data);
+        setAddresses(response.data.addresses);
       }
       setError(response.data.message);
     } catch (err) {
@@ -472,9 +473,13 @@ const HomeScreen = () => {
           <View style={styles.locationHeaderContainer}>
             <Ionicons name="location-outline" size={24} color="white" />
             <Pressable onPress={() => setModalVisible(!modalVisible)}>
-              <Text style={styles.addressText}>
-                Deliver to Hizbullah - Kandy 56789
-              </Text>
+              {selectedAddress ? (
+                <Text style={styles.addressText}>
+                  Deliver to {selectedAddress?.name} - {selectedAddress?.street}
+                </Text>
+              ) : (
+                <Text style={styles.addressText}>Add a Address</Text>
+              )}
             </Pressable>
             <AntDesign name="down" size={18} color="white" />
           </View>
@@ -575,6 +580,37 @@ const HomeScreen = () => {
           </View>
 
           <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
+            {addresses?.map((address) => (
+              <TouchableOpacity
+                onPress={() => setSelectedAddress(address)}
+                style={[
+                  styles.addressesContainer,
+                  {
+                    backgroundColor:
+                      selectedAddress === address
+                        ? COMMON_COLOR.secondary
+                        : "white",
+                    borderWidth: selectedAddress === address ? 0 : 1,
+                  },
+                ]}
+              >
+                <View style={styles.AddressNameTextContainer}>
+                  <Text style={styles.AddressNameText}>
+                    {address?.name}
+                    <Entypo name="location-pin" size={20} color="#B12001" />
+                  </Text>
+                </View>
+
+                <Text style={styles.addressLandMarkText}>
+                  {address?.houseNo}{" "}
+                  {address?.landMark?.length > 10
+                    ? `${address?.landMark?.slice(0, 10)}...`
+                    : address?.landMark}
+                </Text>
+                <Text style={styles.addressCityText}>{address?.street}</Text>
+                <Text style={styles.addressCityText}>{address?.city}</Text>
+              </TouchableOpacity>
+            ))}
             <TouchableOpacity
               onPress={() => {
                 setModalVisible(false);
@@ -753,10 +789,9 @@ const styles = StyleSheet.create({
     color: "gray",
   },
   pickUpPointsContainer: {
-    width: 140,
-    height: 140,
+    width: 150,
+    height: 150,
     borderColor: "#D0D0D0",
-    marginTop: 10,
     borderWidth: 1,
     padding: 10,
     justifyContent: "center",
@@ -781,5 +816,30 @@ const styles = StyleSheet.create({
     gap: 10,
     flexDirection: "column",
     marginBottom: 10,
+  },
+  AddressNameText: {
+    fontWeight: "bold",
+    fontSize: 15,
+  },
+  AddressNameTextContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "start",
+  },
+  addressesContainer: {
+    borderWidth: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    paddingHorizontal: 8,
+    width: 150,
+    height: 150,
+    marginHorizontal: 10,
+    rowGap: 5,
+  },
+  addressLandMarkText: {
+    textAlign: "center",
+  },
+  addressCityText: {
+    textAlign: "center",
   },
 });
