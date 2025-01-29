@@ -333,8 +333,9 @@ export default AddAddressScreen;
 
 const styles = StyleSheet.create({
   container: {
-    marginTop: 50,
+    paddingTop: 20,
     paddingHorizontal: 20,
+    backgroundColor: "white",
   },
   addAddressTitleContainer: {
     padding: 10,

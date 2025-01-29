@@ -66,7 +66,11 @@ const StackNavigator = () => {
           name="add-address"
           component={AddAddressScreen}
           options={{
-            headerShown: false,
+            headerTintColor: "white",
+            headerTitle: "Add New Address",
+            headerStyle: {
+              backgroundColor: COMMON_COLOR.primary,
+            },
           }}
         />
       </Stack.Navigator>

@@ -360,7 +360,7 @@ const HomeScreen = () => {
       );
       if (response.status === 200) {
         console.log(response.data);
-        setAddresses(response.data);
+        setAddresses(response.data.addresses);
       }
       setError(response.data.message);
     } catch (err) {
@@ -575,6 +575,25 @@ const HomeScreen = () => {
           </View>
 
           <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
+            {addresses?.map((address) => (
+              <TouchableOpacity style={styles.addressesContainer}>
+                <View style={styles.AddressNameTextContainer}>
+                  <Text style={styles.AddressNameText}>
+                    {address?.name}
+                    <Entypo name="location-pin" size={20} color="#B12001" />
+                  </Text>
+                </View>
+
+                <Text style={styles.addressLandMarkText}>
+                  {address?.houseNo}{" "}
+                  {address?.landMark?.length > 10
+                    ? `${address?.landMark?.slice(0, 10)}...`
+                    : address?.landMark}
+                </Text>
+                <Text style={styles.addressCityText}>{address?.street}</Text>
+                <Text style={styles.addressCityText}>{address?.city}</Text>
+              </TouchableOpacity>
+            ))}
             <TouchableOpacity
               onPress={() => {
                 setModalVisible(false);
@@ -753,10 +772,9 @@ const styles = StyleSheet.create({
     color: "gray",
   },
   pickUpPointsContainer: {
-    width: 140,
-    height: 140,
+    width: 150,
+    height: 150,
     borderColor: "#D0D0D0",
-    marginTop: 10,
     borderWidth: 1,
     padding: 10,
     justifyContent: "center",
@@ -781,5 +799,30 @@ const styles = StyleSheet.create({
     gap: 10,
     flexDirection: "column",
     marginBottom: 10,
+  },
+  AddressNameText: {
+    fontWeight: "bold",
+    fontSize: 15,
+  },
+  AddressNameTextContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "start",
+  },
+  addressesContainer: {
+    borderWidth: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    paddingHorizontal: 8,
+    width: 150,
+    height: 150,
+    marginHorizontal: 10,
+    rowGap: 5,
+  },
+  addressLandMarkText: {
+    textAlign: "center",
+  },
+  addressCityText: {
+    textAlign: "center",
   },
 });
