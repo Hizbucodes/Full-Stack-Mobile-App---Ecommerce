@@ -5,7 +5,7 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import Entypo from "@expo/vector-icons/Entypo";
 import { useNavigation } from "@react-navigation/native";
 import axios from "axios";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useContext, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import {
   ActivityIndicator,
@@ -23,9 +23,12 @@ import {
 import DropDownPicker from "react-native-dropdown-picker";
 import CustomInput from "../components/customInput/index";
 import ImageCarousel from "../components/ImageCarousel";
+import { jwtDecode } from "jwt-decode";
 import ProductCard from "../components/product/ProductCard";
 import { COMMON_COLOR } from "../constants/commonColor/index";
 import { BottomModal, ModalContent, SlideAnimation } from "react-native-modals";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { userType } from "../context/user/UserContext";
 
 const HomeScreen = () => {
   const images = [
@@ -308,6 +311,8 @@ const HomeScreen = () => {
   ];
 
   const navigation = useNavigation();
+
+  const { userId, setUserId } = useContext(userType);
   const [products, setProducts] = useState([]);
   const [isloading, setIsLoading] = useState(false);
   const [productError, setProductError] = useState(null);
@@ -320,6 +325,9 @@ const HomeScreen = () => {
     { label: "electronics", value: "electronics" },
     { label: "women's clothing", value: "women's clothing" },
   ]);
+
+  const [addresses, setAddresses] = useState([]);
+  const [error, setError] = useState(null);
 
   const onCategoryOpen = useCallback(() => {
     setCompanyOpen(false);
@@ -343,6 +351,43 @@ const HomeScreen = () => {
     };
     fetchData();
   }, []);
+
+  const fetchAddresses = async () => {
+    try {
+      setIsLoading(true);
+      const response = await axios.get(
+        `http://192.168.8.102:3000/api/v1/address/getAllAddresses/${userId}`
+      );
+      if (response.status === 200) {
+        console.log(response.data);
+        setAddresses(response.data);
+      }
+      setError(response.data.message);
+    } catch (err) {
+      console.log("Error: ", err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (userId) {
+      fetchAddresses();
+    }
+  }, [userId, modalVisible]);
+
+  console.log("Addresses: ", addresses);
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      const token = await AsyncStorage.getItem("authToken");
+      const decodedToken = jwtDecode(token);
+      const userId = decodedToken.id;
+
+      setUserId(userId);
+    };
+    fetchUser();
+  });
 
   const renderDealsItems = ({ item }) => {
     return (
