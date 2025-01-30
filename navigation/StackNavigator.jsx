@@ -9,6 +9,7 @@ import ProductInfoScreen from "../screens/ProductInfoScreen";
 import AddressScreen from "../screens/AddressScreen";
 import { COMMON_COLOR } from "../constants/commonColor";
 import AddAddressScreen from "../screens/AddAddressScreen";
+import CartScreen from "../screens/CartScreen";
 
 const StackNavigator = () => {
   const Stack = createStackNavigator();
