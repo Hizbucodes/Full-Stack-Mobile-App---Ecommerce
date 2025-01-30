@@ -44,7 +44,7 @@ export const cartSlice = createSlice({
       }
     },
     incrementQuantity: (state, action) => {
-      const existingItem = state.items.find(
+      const existingItem = state.cart.find(
         (item) => item.id === action.payload.id
       );
 
@@ -53,7 +53,7 @@ export const cartSlice = createSlice({
       }
     },
     decrementQuantity: (state, action) => {
-      const existingItem = state.items.find(
+      const existingItem = state.cart.find(
         (item) => item.id === action.payload.id
       );
 
