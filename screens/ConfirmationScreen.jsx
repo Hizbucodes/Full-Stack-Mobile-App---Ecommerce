@@ -13,7 +13,9 @@ import { userType } from "../context/user/UserContext";
 import Entypo from "@expo/vector-icons/Entypo";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
+import Feather from "@expo/vector-icons/Feather";
 import { COMMON_COLOR } from "../constants/commonColor";
+import { useSelector } from "react-redux";
 
 const ConfirmationScreen = () => {
   const steps = [
@@ -42,12 +44,17 @@ const ConfirmationScreen = () => {
   const [selectedDeliveryOption, setSelectedDeliveryOption] = useState(false);
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState("");
   const { userId } = useContext(userType);
+  const cart = useSelector((state) => state.cart.cart);
+
+  const total = cart
+    ?.map((item) => item.price * item?.quantity)
+    .reduce((curr, prev) => curr + prev, 0);
 
   const fetchAddresses = async () => {
     try {
       setIsLoading(true);
       const response = await axios.get(
-        `http://192.168.8.102:3000/api/v1/address/getAllAddresses/${userId}`
+        `http://192.168.8.101:3000/api/v1/address/getAllAddresses/${userId}`
       );
       if (response.status === 200) {
         console.log(response.data.addresses);
@@ -310,6 +317,56 @@ const ConfirmationScreen = () => {
           </TouchableOpacity>
         </View>
       )}
+
+      {currentStep === 3 && selectedPaymentMethod === "cash" && (
+        <View style={styles.deliveryAddressContainer}>
+          <View style={styles.orderHeading}>
+            <Text style={styles.deliveryAddressText}>Order Now</Text>
+            <Text style={styles.orderTitle}>
+              Shipping to {selectedAddress.name}
+            </Text>
+          </View>
+          <View style={styles.savingContainer}>
+            <View style={styles.savingContainerText}>
+              <Text style={styles.savingTextTitle}>
+                Save 5% and never run out
+              </Text>
+              <Text style={styles.savingTextSubTitle}>
+                Turn on auto deliveries
+              </Text>
+            </View>
+
+            <FontAwesome name="chevron-right" size={20} color="black" />
+          </View>
+
+          <View style={styles.orderContainer}>
+            <View style={styles.orderTextContainer}>
+              <Text style={styles.orderItems}>Items</Text>
+              <Text style={styles.orderDelivery}>Delivery</Text>
+              <Text style={styles.orderTotal}>Order Total</Text>
+            </View>
+
+            <View style={styles.orderTextValueContainer}>
+              <Text style={styles.orderItems}>රු {total}</Text>
+              <Text style={styles.orderDelivery}>රු 0</Text>
+              <Text style={styles.orderItemsTotal}>රු {total}</Text>
+            </View>
+          </View>
+
+          <View style={styles.orderPayWithContainer}>
+            <Text style={styles.payWith}>Pay With</Text>
+            <Text style={styles.payOnDelivery}>Pay on delivery (CASH)</Text>
+          </View>
+
+          <TouchableOpacity
+            onPress={() => setCurrentStep(4)}
+            style={styles.placeOrderContinueButtonContainer}
+          >
+            <Text style={styles.continueButtonText}>Place your Order</Text>
+            <Feather name="box" size={24} color="white" />
+          </TouchableOpacity>
+        </View>
+      )}
     </ScrollView>
   );
 };
@@ -474,5 +531,114 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     marginTop: 30,
+  },
+  savingContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    backgroundColor: "white",
+    paddingHorizontal: 15,
+    paddingVertical: 10,
+    marginTop: 20,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.8,
+    shadowRadius: 2,
+    elevation: 5,
+  },
+  savingContainerText: {
+    flexDirection: "column",
+    alignItems: "flex-start",
+    rowGap: 5,
+  },
+  savingTextTitle: {
+    fontWeight: "bold",
+    fontSize: 16,
+  },
+  savingTextSubTitle: {
+    fontWeight: "500",
+    color: "#58595E",
+  },
+  orderContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingHorizontal: 15,
+    backgroundColor: "white",
+    marginTop: 20,
+    paddingVertical: 15,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.8,
+    shadowRadius: 2,
+    elevation: 5,
+  },
+  orderTextContainer: {
+    flexDirection: "column",
+    rowGap: 10,
+    alignItems: "flex-start",
+  },
+  orderTextValueContainer: {
+    flexDirection: "column",
+    rowGap: 10,
+  },
+  orderTitle: {
+    fontWeight: "500",
+  },
+  orderDelivery: {
+    fontWeight: "500",
+    color: "#58595E",
+  },
+  orderItems: {
+    fontWeight: "500",
+    color: "#58595E",
+  },
+  orderTotal: {
+    fontWeight: "bold",
+    fontSize: 19,
+  },
+  orderItemsTotal: {
+    fontWeight: "bold",
+    fontSize: 19,
+    color: "#D20109",
+  },
+  orderHeading: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
+  orderPayWithContainer: {
+    paddingHorizontal: 15,
+    backgroundColor: "white",
+    marginTop: 20,
+    paddingVertical: 15,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.8,
+    shadowRadius: 2,
+    elevation: 5,
+    rowGap: 5,
+  },
+  payWith: {
+    fontWeight: "bold",
+    color: "#58595E",
+  },
+
+  payOnDelivery: {
+    color: "black",
+    fontWeight: "bold",
+    fontSize: 15,
+  },
+  placeOrderContinueButtonContainer: {
+    backgroundColor: COMMON_COLOR.primary,
+    paddingHorizontal: 10,
+    paddingVertical: 15,
+    borderRadius: 50,
+    width: "100%",
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 30,
+    flexDirection: "row",
+    columnGap: 10,
   },
 });
