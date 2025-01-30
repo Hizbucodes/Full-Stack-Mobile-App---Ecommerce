@@ -148,7 +148,8 @@ const CartScreen = () => {
         ]}
       >
         <Text style={styles.proceedToBuyButtonText}>
-          Proceed to Buy ({cart.length}) products
+          Proceed to Buy ({cart.length}){" "}
+          {cart.length > 1 ? "products" : "product"}
         </Text>
       </TouchableOpacity>
 

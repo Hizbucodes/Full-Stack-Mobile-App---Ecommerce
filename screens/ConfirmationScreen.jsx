@@ -1,14 +1,287 @@
-import { StyleSheet, Text, View } from "react-native";
-import React from "react";
+import {
+  FlatList,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import React, { useContext, useEffect, useState } from "react";
+import axios from "axios";
+import { userType } from "../context/user/UserContext";
+import Entypo from "@expo/vector-icons/Entypo";
+import AntDesign from "@expo/vector-icons/AntDesign";
+import FontAwesome from "@expo/vector-icons/FontAwesome";
+import { COMMON_COLOR } from "../constants/commonColor";
 
 const ConfirmationScreen = () => {
+  const steps = [
+    {
+      title: "Address",
+      Content: "Address Form",
+    },
+    {
+      title: "Delivery",
+      Content: "Delivery Options",
+    },
+    {
+      title: "Payment",
+      Content: "Payment Details",
+    },
+    {
+      title: "Place Order",
+      Content: "Order Summary",
+    },
+  ];
+
+  const [currentStep, setCurrentStep] = useState(0);
+  const [addresses, setAddresses] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [selectedAddress, setSelectedAddress] = useState("");
+  const { userId } = useContext(userType);
+
+  const fetchAddresses = async () => {
+    try {
+      setIsLoading(true);
+      const response = await axios.get(
+        `http://192.168.8.102:3000/api/v1/address/getAllAddresses/${userId}`
+      );
+      if (response.status === 200) {
+        console.log(response.data.addresses);
+        setAddresses(response.data.addresses);
+      }
+    } catch (err) {
+      console.log("Error: ", err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchAddresses();
+  }, []);
+
+  console.log(selectedAddress);
+
+  const renderAddresses = ({ item }) => {
+    return (
+      <Pressable
+        style={{
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "flex-start",
+          columnGap: 30,
+        }}
+      >
+        {selectedAddress && selectedAddress._id === item?._id ? (
+          <AntDesign
+            name="checkcircleo"
+            size={24}
+            color={COMMON_COLOR.primary}
+          />
+        ) : (
+          <Entypo
+            onPress={() => setSelectedAddress(item)}
+            name="circle"
+            size={24}
+            color={COMMON_COLOR.primary}
+          />
+        )}
+        <TouchableOpacity
+          onPress={() => setSelectedAddress(item)}
+          style={styles.addressContainer}
+        >
+          <View style={styles.AddressNameTextContainer}>
+            <Text style={styles.AddressNameText}>
+              {item?.name}
+              <Entypo name="location-pin" size={20} color="#B12001" />
+            </Text>
+          </View>
+          <Text>
+            {item?.houseNo} {item?.landMark}
+          </Text>
+          <Text>{item?.street}</Text>
+          <Text>{item?.country}</Text>
+          <Text>{item?.city}</Text>
+          <Text>Mobile No: {item?.mobileNo}</Text>
+          <Text>Postal Code: {item?.postalCode}</Text>
+          <View style={styles.buttonActionsContainer}>
+            <Pressable style={styles.buttonActionsTextContainer}>
+              <Text style={styles.buttonActionsText}>EDIT</Text>
+            </Pressable>
+            <Pressable style={styles.buttonActionsTextContainer}>
+              <Text style={styles.buttonActionsText}>DELETE</Text>
+            </Pressable>
+            <Pressable style={styles.buttonActionsTextContainer}>
+              <Text style={styles.buttonActionsText}>Set as Default</Text>
+            </Pressable>
+          </View>
+
+          {selectedAddress && selectedAddress._id === item?._id && (
+            <Pressable
+              onPress={() => setCurrentStep(1)}
+              style={styles.selectedAddressButton}
+            >
+              <View style={styles.selectedAddressButtonContainer}>
+                <Text style={styles.selectedAddressText}>
+                  Deliver to this Address
+                </Text>
+                <FontAwesome name="hand-o-right" size={24} color="white" />
+              </View>
+            </Pressable>
+          )}
+        </TouchableOpacity>
+      </Pressable>
+    );
+  };
+
   return (
-    <View>
-      <Text>ConfirmationScreen</Text>
-    </View>
+    <ScrollView style={styles.container}>
+      <View style={styles.stepContainer}>
+        <View style={styles.stepContainerOne}>
+          {steps.map((step, index) => (
+            <View style={styles.childStepComponent} key={index}>
+              {index > 0 && (
+                <View
+                  style={[
+                    styles.step,
+                    index <= currentStep && { backgroundColor: "green" },
+                  ]}
+                />
+              )}
+              <View
+                style={[
+                  styles.stepRounded,
+                  index < currentStep && { backgroundColor: "green" },
+                ]}
+              >
+                {index < currentStep ? (
+                  <Text style={styles.stepRoundedText}>&#10003;</Text>
+                ) : (
+                  <Text style={styles.stepRoundedText}>{index + 1}</Text>
+                )}
+              </View>
+              <Text style={styles.stepTitle}>{step?.title}</Text>
+            </View>
+          ))}
+        </View>
+      </View>
+
+      {currentStep === 0 && (
+        <View style={styles.deliveryAddressContainer}>
+          <Text style={styles.deliveryAddressText}>
+            Select a Delivery Address
+          </Text>
+
+          <FlatList data={addresses} renderItem={renderAddresses} />
+        </View>
+      )}
+    </ScrollView>
   );
 };
 
 export default ConfirmationScreen;
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  container: {
+    backgroundColor: "white",
+  },
+  stepContainer: {
+    flex: 1,
+    paddingHorizontal: 20,
+    paddingTop: 40,
+  },
+  step: {
+    flex: 1,
+    height: 2,
+    backgroundColor: "green",
+  },
+  stepRounded: {
+    width: 30,
+    height: 30,
+    borderRadius: 50,
+    backgroundColor: "#ccc",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  stepRoundedText: {
+    fontSize: 16,
+    fontWeight: "bold",
+    color: "white",
+  },
+  stepContainerOne: {
+    flexDirection: "row",
+    alignItems: "center",
+    margin: 20,
+    justifyContent: "space-between",
+  },
+  stepTitle: {
+    textAlign: "center",
+    marginTop: 8,
+    fontWeight: "500",
+  },
+  childStepComponent: {
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  deliveryAddressContainer: {
+    marginHorizontal: 20,
+  },
+  deliveryAddressText: {
+    fontWeight: "bold",
+    fontSize: 16,
+  },
+
+  addressContainer: {
+    width: "82%",
+    borderWidth: 1,
+    borderRadius: 4,
+    padding: 10,
+    marginVertical: 15,
+  },
+  AddressNameText: {
+    fontWeight: "bold",
+    fontSize: 15,
+  },
+  AddressNameTextContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "start",
+  },
+  buttonActionsContainer: {
+    flexDirection: "row",
+    columnGap: 15,
+    marginTop: 15,
+  },
+  buttonActionsTextContainer: {
+    backgroundColor: COMMON_COLOR.secondary,
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    borderRadius: 5,
+  },
+  buttonActionsText: {
+    color: "white",
+    fontWeight: "500",
+  },
+  selectedAddressButton: {
+    backgroundColor: COMMON_COLOR.primary,
+    alignItems: "center",
+    paddingVertical: 10,
+    borderRadius: 6,
+    marginTop: 20,
+  },
+  selectedAddressText: {
+    color: "white",
+    fontWeight: "bold",
+    textAlign: "center",
+    fontSize: 16,
+  },
+  selectedAddressButtonContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    columnGap: 15,
+    width: "100%",
+  },
+});

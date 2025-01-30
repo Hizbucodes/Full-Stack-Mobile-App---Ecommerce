@@ -390,9 +390,10 @@ const HomeScreen = () => {
     fetchUser();
   });
 
-  const renderDealsItems = ({ item }) => {
+  const renderDealsItems = ({ item, index }) => {
     return (
       <TouchableOpacity
+        key={index}
         onPress={() =>
           navigation.navigate("product-info", {
             id: item.id,
@@ -416,9 +417,10 @@ const HomeScreen = () => {
     );
   };
 
-  const renderOfferItems = ({ item }) => {
+  const renderOfferItems = ({ item, index }) => {
     return (
       <Pressable
+        key={index}
         onPress={() =>
           navigation.navigate("product-info", {
             id: item.id,
