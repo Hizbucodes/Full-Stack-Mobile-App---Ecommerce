@@ -10,6 +10,7 @@ import AddressScreen from "../screens/AddressScreen";
 import { COMMON_COLOR } from "../constants/commonColor";
 import AddAddressScreen from "../screens/AddAddressScreen";
 import CartScreen from "../screens/CartScreen";
+import ConfirmationScreen from "../screens/ConfirmationScreen";
 
 const StackNavigator = () => {
   const Stack = createStackNavigator();
@@ -69,6 +70,18 @@ const StackNavigator = () => {
           options={{
             headerTintColor: "white",
             headerTitle: "Add New Address",
+            headerStyle: {
+              backgroundColor: COMMON_COLOR.primary,
+            },
+          }}
+        />
+
+        <Stack.Screen
+          name="confirmation-screen"
+          component={ConfirmationScreen}
+          options={{
+            headerTitle: "Confirm Payment",
+            headerTintColor: "white",
             headerStyle: {
               backgroundColor: COMMON_COLOR.primary,
             },

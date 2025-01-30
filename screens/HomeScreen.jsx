@@ -357,7 +357,7 @@ const HomeScreen = () => {
     try {
       setIsLoading(true);
       const response = await axios.get(
-        `http://192.168.8.102:3000/api/v1/address/getAllAddresses/${userId}`
+        `http://192.168.8.101:3000/api/v1/address/getAllAddresses/${userId}`
       );
       if (response.status === 200) {
         console.log(response.data);
@@ -390,9 +390,10 @@ const HomeScreen = () => {
     fetchUser();
   });
 
-  const renderDealsItems = ({ item }) => {
+  const renderDealsItems = ({ item, index }) => {
     return (
       <TouchableOpacity
+        key={index}
         onPress={() =>
           navigation.navigate("product-info", {
             id: item.id,
@@ -416,9 +417,10 @@ const HomeScreen = () => {
     );
   };
 
-  const renderOfferItems = ({ item }) => {
+  const renderOfferItems = ({ item, index }) => {
     return (
       <Pressable
+        key={index}
         onPress={() =>
           navigation.navigate("product-info", {
             id: item.id,

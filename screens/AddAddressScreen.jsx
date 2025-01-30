@@ -56,7 +56,7 @@ const AddAddressScreen = () => {
     console.log("handleAddAddress triggered with data:", data);
     try {
       const response = await axios.post(
-        "http://192.168.8.102:3000/api/v1/address/addAddress",
+        "http://192.168.8.101:3000/api/v1/address/addAddress",
         {
           userId,
           address: {

@@ -18,7 +18,7 @@ app.use("/api/v1/address", addressRoute);
 
 const PORT = process.env.PORT;
 
-app.listen(PORT, "192.168.8.102", () => {
+app.listen(PORT, "192.168.8.101", () => {
   connectDB();
-  console.log(`server is running on port: ${PORT} with http://192.168.8.102`);
+  console.log(`server is running on port: ${PORT} with http://192.168.8.101`);
 });
