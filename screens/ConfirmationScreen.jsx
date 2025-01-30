@@ -40,6 +40,7 @@ const ConfirmationScreen = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [selectedAddress, setSelectedAddress] = useState("");
   const [selectedDeliveryOption, setSelectedDeliveryOption] = useState(false);
+  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState("");
   const { userId } = useContext(userType);
 
   const fetchAddresses = async () => {
@@ -232,6 +233,83 @@ const ConfirmationScreen = () => {
           </View>
         </View>
       )}
+
+      {currentStep === 2 && (
+        <View style={styles.deliveryAddressContainer}>
+          <Text style={styles.deliveryAddressText}>
+            Select your Payment Method
+          </Text>
+
+          <Pressable
+            onPress={() => setSelectedPaymentMethod("cash")}
+            style={[
+              styles.paymentOption,
+              {
+                backgroundColor:
+                  selectedPaymentMethod === "cash" ? "#C0BDBA" : "#E2E2E2",
+              },
+            ]}
+          >
+            {selectedPaymentMethod === "cash" ? (
+              <AntDesign
+                onPress={() => setSelectedPaymentMethod("cash")}
+                name="checkcircleo"
+                size={24}
+                color={"black"}
+              />
+            ) : (
+              <Entypo
+                onPress={() => setSelectedPaymentMethod("cash")}
+                name="circle"
+                size={24}
+                color={"black"}
+              />
+            )}
+
+            <Text style={styles.selectedDeliveryOptionText}>
+              Cash on Delivery
+            </Text>
+          </Pressable>
+
+          <Pressable
+            onPress={() => setSelectedPaymentMethod("card")}
+            style={[
+              styles.paymentOption,
+              {
+                backgroundColor:
+                  selectedPaymentMethod === "card" ? "#C0BDBA" : "#E2E2E2",
+              },
+            ]}
+          >
+            {selectedPaymentMethod === "card" ? (
+              <AntDesign
+                onPress={() => setSelectedPaymentMethod("card")}
+                name="checkcircleo"
+                size={24}
+                color={"black"}
+              />
+            ) : (
+              <Entypo
+                onPress={() => setSelectedPaymentMethod("card")}
+                name="circle"
+                size={24}
+                color={"black"}
+              />
+            )}
+
+            <Text style={styles.selectedDeliveryOptionText}>
+              Credit / Debit Card
+            </Text>
+          </Pressable>
+
+          <TouchableOpacity
+            onPress={() => setCurrentStep(3)}
+            style={styles.paymentMethodContinueButtonContainer}
+          >
+            <Text style={styles.continueButtonText}>Continue</Text>
+          </TouchableOpacity>
+        </View>
+      )}
     </ScrollView>
   );
 };
@@ -340,7 +418,7 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   selectedDeliveryOptionText: {
-    fontWeight: "500",
+    fontWeight: "bold",
     textAlign: "justify",
     paddingLeft: 15,
     maxWidth: 400,
@@ -375,5 +453,26 @@ const styles = StyleSheet.create({
     color: "white",
     textAlign: "center",
     fontSize: 16,
+  },
+
+  paymentOption: {
+    width: "100%",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "flex-start",
+    paddingVertical: 15,
+    borderRadius: 3,
+    paddingLeft: 15,
+    marginTop: 20,
+  },
+  paymentMethodContinueButtonContainer: {
+    backgroundColor: COMMON_COLOR.primary,
+    paddingHorizontal: 10,
+    paddingVertical: 15,
+    borderRadius: 50,
+    width: "100%",
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 30,
   },
 });
