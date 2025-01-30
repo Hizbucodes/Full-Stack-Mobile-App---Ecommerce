@@ -39,6 +39,7 @@ const ConfirmationScreen = () => {
   const [addresses, setAddresses] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [selectedAddress, setSelectedAddress] = useState("");
+  const [selectedDeliveryOption, setSelectedDeliveryOption] = useState(false);
   const { userId } = useContext(userType);
 
   const fetchAddresses = async () => {
@@ -177,6 +178,60 @@ const ConfirmationScreen = () => {
           <FlatList data={addresses} renderItem={renderAddresses} />
         </View>
       )}
+
+      {currentStep === 1 && (
+        <View style={styles.deliveryAddressContainer}>
+          <Text style={styles.deliveryAddressText}>
+            Choose Your Delivery Options
+          </Text>
+
+          <View style={styles.deliveryOptionContainer}>
+            <Pressable
+              onPress={() => setSelectedDeliveryOption(!selectedDeliveryOption)}
+              style={[
+                styles.deliveryOption,
+                {
+                  backgroundColor: selectedDeliveryOption
+                    ? "#C0BDBA"
+                    : "#E2E2E2",
+                },
+              ]}
+            >
+              {selectedDeliveryOption ? (
+                <AntDesign
+                  onPress={() =>
+                    setSelectedDeliveryOption(!selectedDeliveryOption)
+                  }
+                  name="checkcircleo"
+                  size={24}
+                  color={"black"}
+                />
+              ) : (
+                <Entypo
+                  onPress={() =>
+                    setSelectedDeliveryOption(!selectedDeliveryOption)
+                  }
+                  name="circle"
+                  size={24}
+                  color={"black"}
+                />
+              )}
+
+              <Text style={styles.selectedDeliveryOptionText}>
+                Tomorrow by 10pm {" - "} FREE delivery with your Prime
+                membership
+              </Text>
+            </Pressable>
+
+            <TouchableOpacity
+              onPress={() => setCurrentStep(2)}
+              style={styles.continueButtonContainer}
+            >
+              <Text style={styles.continueButtonText}>Continue</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      )}
     </ScrollView>
   );
 };
@@ -283,5 +338,42 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     columnGap: 15,
     width: "100%",
+  },
+  selectedDeliveryOptionText: {
+    fontWeight: "500",
+    textAlign: "justify",
+    paddingLeft: 15,
+    maxWidth: 400,
+  },
+  deliveryOptionContainer: {
+    flexDirection: "column",
+    rowGap: 30,
+    alignItems: "center",
+    marginTop: 25,
+  },
+  deliveryOption: {
+    width: "100%",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "flex-start",
+    paddingVertical: 15,
+    borderRadius: 3,
+    paddingLeft: 15,
+  },
+  continueButtonContainer: {
+    backgroundColor: COMMON_COLOR.primary,
+    paddingHorizontal: 10,
+    paddingVertical: 15,
+    borderRadius: 50,
+    width: "100%",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+
+  continueButtonText: {
+    fontWeight: "bold",
+    color: "white",
+    textAlign: "center",
+    fontSize: 16,
   },
 });
