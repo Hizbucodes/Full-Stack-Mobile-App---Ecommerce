@@ -1,3 +1,7 @@
+import AntDesign from "@expo/vector-icons/AntDesign";
+import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
+import { useNavigation } from "@react-navigation/native";
+import React from "react";
 import {
   FlatList,
   Image,
@@ -5,22 +9,16 @@ import {
   ScrollView,
   StyleSheet,
   Text,
-  TextInput,
-  TouchableHighlight,
   TouchableOpacity,
   View,
 } from "react-native";
-import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { COMMON_COLOR } from "../constants/commonColor/commonColor";
-import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
-import AntDesign from "@expo/vector-icons/AntDesign";
 import {
   decrementQuantity,
   incrementQuantity,
   removeFromCart,
 } from "../app/feature/cart/cartSlice";
-import { useNavigation } from "@react-navigation/native";
+import { COMMON_COLOR } from "../constants/commonColor/commonColor";
 
 const CartScreen = () => {
   const cart = useSelector((state) => state.cart.cart);
@@ -138,7 +136,17 @@ const CartScreen = () => {
         <Text style={styles.subTotalValue}>රු {total}</Text>
       </View>
 
-      <TouchableOpacity style={styles.proceedToBuyButton}>
+      <TouchableOpacity
+        disabled={cart.length < 1 ? true : false}
+        onPress={() => navigation.navigate("confirmation-screen")}
+        style={[
+          styles.proceedToBuyButton,
+          {
+            backgroundColor:
+              cart.length >= 1 ? COMMON_COLOR.primary : COMMON_COLOR.secondary,
+          },
+        ]}
+      >
         <Text style={styles.proceedToBuyButtonText}>
           Proceed to Buy ({cart.length}) products
         </Text>
@@ -146,7 +154,24 @@ const CartScreen = () => {
 
       <Text style={styles.bottomHorizontalLine} />
 
-      <FlatList data={cart} renderItem={renderCartItems} />
+      {cart.length > 0 ? (
+        <FlatList data={cart} renderItem={renderCartItems} />
+      ) : (
+        <>
+          <Image
+            style={styles.emptyCartImage}
+            source={require("../assets/empty-cart.jpg")}
+          />
+
+          <Text style={styles.emptyCartText}>
+            Your Cart is Currently Empty 🙄
+          </Text>
+          <Text style={styles.emptyCartTextDescription}>
+            Before proceed to checkout you must add some products to your
+            shopping cart.
+          </Text>
+        </>
+      )}
     </ScrollView>
   );
 };
@@ -176,7 +201,6 @@ const styles = StyleSheet.create({
     fontSize: 25,
   },
   proceedToBuyButton: {
-    backgroundColor: COMMON_COLOR.primary,
     paddingVertical: 18,
     borderRadius: 5,
     alignItems: "center",
@@ -268,5 +292,27 @@ const styles = StyleSheet.create({
   },
   bottomButtonTextTwo: {
     fontWeight: "500",
+  },
+
+  emptyCartImage: {
+    width: 320,
+    height: 320,
+    resizeMode: "cover",
+    alignSelf: "center",
+  },
+  emptyCartText: {
+    textAlign: "center",
+    marginTop: 50,
+    fontWeight: "bold",
+    fontSize: 25,
+  },
+  emptyCartTextDescription: {
+    textAlign: "center",
+    marginTop: 15,
+    width: 350,
+    margin: "auto",
+    color: "#C0BDBA",
+    fontWeight: "bold",
+    fontSize: 15,
   },
 });

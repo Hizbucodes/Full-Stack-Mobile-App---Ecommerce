@@ -8,9 +8,9 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useCallback, useContext, useEffect, useState } from "react";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
-import { useNavigation } from "@react-navigation/native";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import Entypo from "@expo/vector-icons/Entypo";
 import axios from "axios";
 import { userType } from "../context/user/UserContext";
@@ -49,6 +49,12 @@ const AddressScreen = () => {
   }, []);
 
   console.log(addresses);
+
+  useFocusEffect(
+    useCallback(() => {
+      fetchAddresses();
+    }, [])
+  );
 
   const renderAddresses = ({ item }) => {
     return (
