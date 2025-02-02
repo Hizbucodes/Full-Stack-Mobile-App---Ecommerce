@@ -11,6 +11,7 @@ import { COMMON_COLOR } from "../constants/commonColor";
 import AddAddressScreen from "../screens/AddAddressScreen";
 import CartScreen from "../screens/CartScreen";
 import ConfirmationScreen from "../screens/ConfirmationScreen";
+import OrderScreen from "../screens/OrderScreen";
 
 const StackNavigator = () => {
   const Stack = createStackNavigator();
@@ -85,6 +86,14 @@ const StackNavigator = () => {
             headerStyle: {
               backgroundColor: COMMON_COLOR.primary,
             },
+          }}
+        />
+
+        <Stack.Screen
+          name="order"
+          component={OrderScreen}
+          options={{
+            headerShown: false,
           }}
         />
       </Stack.Navigator>

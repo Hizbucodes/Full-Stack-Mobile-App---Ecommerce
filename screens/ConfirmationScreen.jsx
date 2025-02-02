@@ -8,6 +8,7 @@ import {
   View,
 } from "react-native";
 import React, { useContext, useEffect, useState } from "react";
+import { cleanCartAfterPaymentProcess } from "../app/feature/cart/cartSlice";
 import axios from "axios";
 import { userType } from "../context/user/UserContext";
 import Entypo from "@expo/vector-icons/Entypo";
@@ -15,7 +16,8 @@ import AntDesign from "@expo/vector-icons/AntDesign";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import Feather from "@expo/vector-icons/Feather";
 import { COMMON_COLOR } from "../constants/commonColor";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigation } from "@react-navigation/native";
 
 const ConfirmationScreen = () => {
   const steps = [
@@ -37,6 +39,8 @@ const ConfirmationScreen = () => {
     },
   ];
 
+  const navigation = useNavigation();
+
   const [currentStep, setCurrentStep] = useState(0);
   const [addresses, setAddresses] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -45,6 +49,7 @@ const ConfirmationScreen = () => {
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState("");
   const { userId } = useContext(userType);
   const cart = useSelector((state) => state.cart.cart);
+  const dispatch = useDispatch();
 
   const total = cart
     ?.map((item) => item.price * item?.quantity)
@@ -54,7 +59,7 @@ const ConfirmationScreen = () => {
     try {
       setIsLoading(true);
       const response = await axios.get(
-        `http://192.168.8.101:3000/api/v1/address/getAllAddresses/${userId}`
+        `http://192.168.8.102:3000/api/v1/address/getAllAddresses/${userId}`
       );
       if (response.status === 200) {
         console.log(response.data.addresses);
@@ -70,6 +75,42 @@ const ConfirmationScreen = () => {
   useEffect(() => {
     fetchAddresses();
   }, []);
+
+  const handlePlaceOrder = async () => {
+    try {
+      const orderData = {
+        userId,
+        cartItems: cart,
+        totalPrice: total,
+        shippingAddress: selectedAddress,
+        paymentMethod: selectedPaymentMethod,
+      };
+
+      const response = await axios.post(
+        "http://192.168.8.102:3000/api/v1/order/orders",
+        orderData
+      );
+
+      if (response.status === 201) {
+        dispatch(cleanCartAfterPaymentProcess());
+        navigation.navigate("order");
+
+        console.log("✅ Order Created Successfully:", response.data.order);
+      } else {
+        console.error("⚠️ Error While Creating Order:", response.data);
+      }
+    } catch (err) {
+      if (err.response) {
+        console.error("❌ API Error:", err.response.data.message);
+      } else if (err.request) {
+        console.error(
+          "❌ Network Error: No response received from the server."
+        );
+      } else {
+        console.error("❌ Error Occurred:", err.message);
+      }
+    }
+  };
 
   console.log(selectedAddress);
 
@@ -359,7 +400,7 @@ const ConfirmationScreen = () => {
           </View>
 
           <TouchableOpacity
-            onPress={() => setCurrentStep(4)}
+            onPress={handlePlaceOrder}
             style={styles.placeOrderContinueButtonContainer}
           >
             <Text style={styles.continueButtonText}>Place your Order</Text>

@@ -57,7 +57,7 @@ const LoginScreen = () => {
   const onSignInPressed = async (data) => {
     try {
       const response = await axios.post(
-        "http://192.168.8.101:3000/api/v1/auth/login",
+        "http://192.168.8.102:3000/api/v1/auth/login",
         data
       );
 

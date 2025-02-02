@@ -3,13 +3,13 @@ import { View, FlatList, Image, Dimensions } from "react-native";
 import PropTypes from "prop-types";
 
 const ImageCarousel = ({
-  images = [],
-  autoScrollInterval = 5000,
-  imageHeight = 200,
-  dotActiveColor = "#000",
-  dotInactiveColor = "#ccc",
-  resizeMode = "cover",
-  showDotIndicator = false,
+  images,
+  autoScrollInterval,
+  imageHeight,
+  dotActiveColor,
+  dotInactiveColor,
+  resizeMode,
+  showDotIndicator,
 }) => {
   const screenWidth = Dimensions.get("window").width;
   const [activeIndex, setActiveIndex] = useState(0);
