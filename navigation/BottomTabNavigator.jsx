@@ -6,6 +6,7 @@ import React from "react";
 import { BOTTOM_TAB_BAR_COLOR } from "../constants/bottomTabBar/index";
 import HomeScreen from "../screens/HomeScreen";
 import CartScreen from "../screens/CartScreen";
+import ProfileScreen from "../screens/ProfileScreen";
 
 const BottomTabNavigator = () => {
   const Tab = createBottomTabNavigator();
@@ -46,10 +47,10 @@ const BottomTabNavigator = () => {
 
       <Tab.Screen
         name="Profile"
-        component={HomeScreen}
+        component={ProfileScreen}
         options={{
-          headerShown: false,
           tabBarLabel: "Profile",
+
           tabBarLabelStyle: {
             color: BOTTOM_TAB_BAR_COLOR.labelColor,
             fontWeight: "bold",
