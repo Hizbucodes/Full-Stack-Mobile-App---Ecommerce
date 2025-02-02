@@ -4,7 +4,6 @@ const orderSchema = new mongoose.Schema({
   user: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
-    required: true,
   },
   products: [
     {
@@ -44,7 +43,7 @@ const orderSchema = new mongoose.Schema({
       required: true,
     },
     street: {
-      Type: String,
+      type: String,
       required: true,
     },
     landMark: {
@@ -62,7 +61,7 @@ const orderSchema = new mongoose.Schema({
   },
   createdAt: {
     type: Date,
-    default: Date.now(),
+    default: Date.now,
   },
 });
 
