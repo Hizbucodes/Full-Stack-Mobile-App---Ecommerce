@@ -8,6 +8,8 @@ export const storeAllOrders = async (req, res) => {
 
     const user = await User.findById(userId);
 
+    console.log("USER:", user);
+
     if (!user) {
       return res.status(404).json({
         status: "fail",

@@ -79,7 +79,7 @@ const ConfirmationScreen = () => {
   const handlePlaceOrder = async () => {
     try {
       const orderData = {
-        userId,
+        userId: userId,
         cartItems: cart,
         totalPrice: total,
         shippingAddress: selectedAddress,
